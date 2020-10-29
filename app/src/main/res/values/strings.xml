@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Linear Programming</string>
+    <string name="Title">Programacion Lineal</string>
+    <string name="Selecione">Seleccione un metodo:</string>
+    <string name="Simplex">Simplex</string>
+    <string name="title_activity_main2">SIMPLEX</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+</resources>
