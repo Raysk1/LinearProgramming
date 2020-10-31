@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,19 +17,31 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.snackbar.Snackbar;
 import com.raysk.linearprogramming.logic.Simplex;
 
+import java.util.ArrayList;
+
 public class SimplexTableActivity extends AppCompatActivity {
-    Simplex simplex;
+    private Simplex simplex;
     private EditText vars, res;
-    private Button siguiente;
+    private ArrayList<EditText> datos;
+    private Button siguiente, obtenerResul;
     private double matrix[][];
     private int numVar, numRes;
 
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        datos = new ArrayList<>();
+        obtenerResul = new Button(this);
         setContentView(R.layout.captar_num_var_res);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         capturaVarYRes();
+
+        obtenerResul.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               datosToMatrix();
+            }
+        });
 
 
 
@@ -91,6 +102,10 @@ public class SimplexTableActivity extends AppCompatActivity {
                     Snackbar.make(findViewById(R.id.siguiente), "Rellene todos los campos", Snackbar.LENGTH_SHORT).show();
                 } else if (Integer.parseInt(vars.getText().toString()) == 0 || Integer.parseInt(res.getText().toString()) == 0) {
                     Snackbar.make(findViewById(R.id.siguiente), "Los campos no pueden valer 0", Snackbar.LENGTH_SHORT).show();
+
+                }else if (Integer.parseInt(vars.getText().toString()) == 1){
+                    Snackbar.make(findViewById(R.id.siguiente), "El numero de variables debe de ser mayor a 1", Snackbar.LENGTH_SHORT).show();
+
                 } else {
                     setNumVar(Integer.parseInt(vars.getText().toString()));
                     setNumRes(Integer.parseInt(res.getText().toString()));
@@ -113,27 +128,6 @@ public class SimplexTableActivity extends AppCompatActivity {
     }
 
 
-    private void prueba(int numRes, int numVar) {
-        LinearLayout layout = (LinearLayout) findViewById(R.id.captura_datos);
-        layout.setOrientation(LinearLayout.VERTICAL);  //Can also be done in xml by android:orientation="vertical"
-
-        for (int i = 0; i < numVar; i++) {
-            LinearLayout row = new LinearLayout(this);
-            row.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-
-            for (int j = 0; j < numRes; j++) {
-                Button btnTag = new Button(this);
-                btnTag.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                btnTag.setText("Button " + (j + 1 + (i * 4)));
-                btnTag.setId(j + 1 + (i * 4));
-                row.addView(btnTag);
-            }
-
-            layout.addView(row);
-
-        }
-    }
-
     private void capturaDatos() {
         matrix = new double[numRes + 1][numVar + numRes + 1];
         int index = 1;
@@ -142,7 +136,9 @@ public class SimplexTableActivity extends AppCompatActivity {
         layout.setOrientation(LinearLayout.VERTICAL);  //Can also be done in xml by android:orientation="vertical"
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
 
-        for (int k = 0; k < numRes +1; k++) {
+
+
+        for (int k = 0; k < numRes + 1; k++) {
             index = 1;
             LinearLayout res = new LinearLayout(this);
             res.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -150,12 +146,15 @@ public class SimplexTableActivity extends AppCompatActivity {
             textView.setTextSize(50);
             textView.setBackgroundColor(Color.GREEN);
             textView.setLayoutParams(params);
-            if (k ==0) {
+
+
+            if (k == 0) {
                 textView.setText("Funcion Objetivo:");
-            }else {
-                textView.setText("Restriccion " + k);
+            } else {
+                textView.setText("Restriccion " + k + ":");
             }
             res.addView(textView);
+
             layout.addView(res);
 
             for (int i = 0; i < numVar + 1; i++) {
@@ -169,7 +168,7 @@ public class SimplexTableActivity extends AppCompatActivity {
                         view.setGravity(Gravity.CENTER);
                         view.setWidth(300);
                         view.setHeight(250);
-                        if (i == numVar ) {
+                        if (i == numVar) {
                             view.setText("<=");
                         } else {
                             view.setText("X" + (index) + " =");
@@ -177,7 +176,7 @@ public class SimplexTableActivity extends AppCompatActivity {
                         }
 
                         row.addView(view);
-                    }else {
+                    } else {
                         EditText text = new EditText(this);
                         text.setInputType(InputType.TYPE_CLASS_NUMBER);
                         text.setWidth(300);
@@ -186,6 +185,7 @@ public class SimplexTableActivity extends AppCompatActivity {
                         text.setId(id++);
                         text.setTextSize(30);
                         row.addView(text);
+                        datos.add(text);
                     }
 
                 }
@@ -196,7 +196,59 @@ public class SimplexTableActivity extends AppCompatActivity {
 
         }
 
+        obtenerResul.setTextSize(40);
+        obtenerResul.setBackgroundColor(Color.CYAN);
+        obtenerResul.setLayoutParams(params);
+        obtenerResul.setText("Obtener Resultado");
+        LinearLayout res = new LinearLayout(this);
+        LinearLayout row = new LinearLayout(this);
+        row.addView(obtenerResul);
+        res.addView(row);
+        layout.addView(res);
 
+
+
+    }
+
+    private void datosToMatrix(){
+    int index = 0;
+
+        for (int i = 0; i <matrix.length ; i++) {
+            matrix[i][matrix[i].length-1] = Double.parseDouble(datos.get(numVar + (i*(numVar+1))).getText().toString());
+
+        }
+
+
+        for (int i = 0; i <matrix.length ; i++) {
+            for (int j = 0; j < numVar; j++) {
+                matrix[i][j] = Double.parseDouble(datos.get(index).getText().toString());
+                if (j == 0) {
+                    index++;
+                }else {
+                    index +=2;
+                }
+            }
+        }
+
+
+
+        int aux = numVar+1;
+        for (int i = 1; i <matrix.length ; i++) {
+            matrix[i][numVar++] = 1;
+        }
+
+
+        for (int i = 0; i <matrix.length ; i++) {
+            System.out.println("///"+ i +"///");
+            for (int j = 0; j < matrix[i].length; j++) {
+                System.out.print(matrix[i][j] + " ");
+            }
+        }
+
+        System.out.println(matrix[0][0]);
+
+
+        datos.clear();
 
     }
 
