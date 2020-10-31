@@ -18,9 +18,6 @@ public class Simplex {
        // this.matrix = matrix;
 
 
-        //this.z = new int[numVars + 1];
-        // this.matrix = new int [numVars + numRestrictions + 1][numRestrictions + 1];
-
     }
 
     // metodo de procesamiento que finaliza una ves encontrado el resultado optimo

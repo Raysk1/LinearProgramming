@@ -14,6 +14,7 @@ public class PageViewModel extends ViewModel {
         public String apply(Integer input) {
             return "Hello world from section: " + input;
         }
+
     });
 
     public void setIndex(int index) {

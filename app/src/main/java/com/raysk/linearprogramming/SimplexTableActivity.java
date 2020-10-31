@@ -1,5 +1,6 @@
 package com.raysk.linearprogramming;
 
+import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -9,13 +10,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
 import com.raysk.linearprogramming.logic.Simplex;
+import com.raysk.linearprogramming.ui.main.SectionsPagerAdapter;
 
 import java.util.ArrayList;
 
@@ -23,23 +26,41 @@ public class SimplexTableActivity extends AppCompatActivity {
     private Simplex simplex;
     private EditText vars, res;
     private ArrayList<EditText> datos;
-    private Button siguiente, obtenerResul;
-    private double matrix[][];
+    private Button obtenerResul;
+    private double[][] matrix;
     private int numVar, numRes;
 
 
+    @SuppressLint("ResourceType")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         datos = new ArrayList<>();
         obtenerResul = new Button(this);
+        obtenerResul.setId(560000000);
         setContentView(R.layout.captar_num_var_res);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         capturaVarYRes();
 
+
+
+
+
+
         obtenerResul.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               datosToMatrix();
+
+                if (!validacionDeDatos()){
+                    Snackbar.make(findViewById(obtenerResul.getId()), "Rellene todos los campos", Snackbar.LENGTH_SHORT).show();
+                }else {
+                    datosToMatrix();
+                    setContentView(R.layout.simplex_table);
+                    SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(SimplexTableActivity.this, getSupportFragmentManager());
+                    ViewPager viewPager = findViewById(R.id.view_pager);
+                    viewPager.setAdapter(sectionsPagerAdapter);
+                    TabLayout tabs = findViewById(R.id.tabs);
+                    tabs.setupWithViewPager(viewPager);
+                }
             }
         });
 
@@ -60,15 +81,8 @@ public class SimplexTableActivity extends AppCompatActivity {
 
 
 
-        /*setContentView(R.layout.simplex_table);
 
-        simplex = new Simplex(null);
 
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager(),2);
-        ViewPager viewPager = findViewById(R.id.view_pager);
-        viewPager.setAdapter(sectionsPagerAdapter);
-        TabLayout tabs = findViewById(R.id.tabs);
-        tabs.setupWithViewPager(viewPager);*/
 
 
     }
@@ -86,14 +100,11 @@ public class SimplexTableActivity extends AppCompatActivity {
     }
 
     private void capturaVarYRes() {
-        vars = (EditText) findViewById(R.id.Vars);
-        res = (EditText) findViewById(R.id.Rest);
-        siguiente = findViewById(R.id.siguiente);
+        vars = findViewById(R.id.Vars);
+        res = findViewById(R.id.Rest);
+        Button siguiente = findViewById(R.id.siguiente);
 
         siguiente.setOnClickListener(new View.OnClickListener() {
-
-            private TableLayout tableLayout;
-            Button button;
 
             public void onClick(View v) {
 
@@ -128,11 +139,12 @@ public class SimplexTableActivity extends AppCompatActivity {
     }
 
 
+    @SuppressLint("SetTextI18n")
     private void capturaDatos() {
         matrix = new double[numRes + 1][numVar + numRes + 1];
-        int index = 1;
+        int index;
         int id = 1;
-        LinearLayout layout = (LinearLayout) findViewById(R.id.captura_datos);
+        LinearLayout layout = findViewById(R.id.captura_datos);
         layout.setOrientation(LinearLayout.VERTICAL);  //Can also be done in xml by android:orientation="vertical"
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
 
@@ -231,8 +243,6 @@ public class SimplexTableActivity extends AppCompatActivity {
         }
 
 
-
-        int aux = numVar+1;
         for (int i = 1; i <matrix.length ; i++) {
             matrix[i][numVar++] = 1;
         }
@@ -250,6 +260,16 @@ public class SimplexTableActivity extends AppCompatActivity {
 
         datos.clear();
 
+    }
+
+    private boolean validacionDeDatos(){
+        boolean aux  = true;
+        for (int i = 0; i < datos.size() && aux  ; i++) {
+            if (datos.get(i).getText().toString().equals("")){
+                aux = false;
+            }
+        }
+        return aux;
     }
 
 

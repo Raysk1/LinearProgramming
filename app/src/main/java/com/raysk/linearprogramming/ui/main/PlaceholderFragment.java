@@ -27,6 +27,7 @@ public class PlaceholderFragment extends Fragment {
     private PageViewModel pageViewModel;
     double[][] matrix;
     int index;
+    Simplex simplex;
 
     public PlaceholderFragment(int index){
         this.index = index;
@@ -49,6 +50,8 @@ public class PlaceholderFragment extends Fragment {
         if (getArguments() != null) {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
         }
+
+        simplex = new Simplex(null);
         //id de pagina
         pageViewModel.setIndex(index);
     }
@@ -61,7 +64,7 @@ public class PlaceholderFragment extends Fragment {
 
 
         //dibujar tabla
-        Simplex simplex = new Simplex(null);
+
         DinamicTable dinamicTable = new DinamicTable((TableLayout)root.findViewById(R.id.tabla),getContext(),simplex.getMatrix());
         dinamicTable.get();
 
