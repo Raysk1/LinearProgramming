@@ -2,33 +2,34 @@ package com.raysk.linearprogramming;
 
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.text.InputType;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.raysk.linearprogramming.logic.Simplex;
 
-public class SimplexTableActivity extends AppCompatActivity{
+public class SimplexTableActivity extends AppCompatActivity {
     Simplex simplex;
-    private EditText vars,res;
+    private EditText vars, res;
     private Button siguiente;
     private double matrix[][];
     private int numVar, numRes;
-
 
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.captar_num_var_res);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        capturarDatos();
+        capturaVarYRes();
 
 
 
@@ -61,18 +62,18 @@ public class SimplexTableActivity extends AppCompatActivity{
     }
 
 
-    private String[] getTabsTitles(){
+    private String[] getTabsTitles() {
         String[] titles = new String[5];
         titles[0] = "Tabla inicial";
-        titles[titles.length-1] = "resultados";
+        titles[titles.length - 1] = "resultados";
 
-        for (int i = 1; i < titles.length-1 ; i++) {
-            titles[i] = "Tabla "+ i;
+        for (int i = 1; i < titles.length - 1; i++) {
+            titles[i] = "Tabla " + i;
         }
         return titles;
     }
 
-    private void capturarDatos(){
+    private void capturaVarYRes() {
         vars = (EditText) findViewById(R.id.Vars);
         res = (EditText) findViewById(R.id.Rest);
         siguiente = findViewById(R.id.siguiente);
@@ -81,18 +82,20 @@ public class SimplexTableActivity extends AppCompatActivity{
 
             private TableLayout tableLayout;
             Button button;
+
             public void onClick(View v) {
 
 
-                if (vars.getText().toString().equals("") || res.getText().toString().equals("")){
-                    Snackbar.make(findViewById(R.id.siguiente),"Rellene todos los campos",Snackbar.LENGTH_SHORT).show();
-                }else if (Integer.parseInt(vars.getText().toString()) == 0 || Integer.parseInt(res.getText().toString()) == 0 ){
-                    Snackbar.make(findViewById(R.id.siguiente),"Los campos no pueden valer 0",Snackbar.LENGTH_SHORT).show();
-                }else {
+                if (vars.getText().toString().equals("") || res.getText().toString().equals("")) {
+                    Snackbar.make(findViewById(R.id.siguiente), "Rellene todos los campos", Snackbar.LENGTH_SHORT).show();
+                } else if (Integer.parseInt(vars.getText().toString()) == 0 || Integer.parseInt(res.getText().toString()) == 0) {
+                    Snackbar.make(findViewById(R.id.siguiente), "Los campos no pueden valer 0", Snackbar.LENGTH_SHORT).show();
+                } else {
                     setNumVar(Integer.parseInt(vars.getText().toString()));
                     setNumRes(Integer.parseInt(res.getText().toString()));
                     setContentView(R.layout.capturar_datos);
-                    prueba(numRes,numVar);
+                    //prueba(numRes,numVar);
+                    capturaDatos();
                 }
 
             }
@@ -100,7 +103,7 @@ public class SimplexTableActivity extends AppCompatActivity{
 
     }
 
-    private void setNumVar(int numVar){
+    private void setNumVar(int numVar) {
         this.numVar = numVar;
     }
 
@@ -109,7 +112,7 @@ public class SimplexTableActivity extends AppCompatActivity{
     }
 
 
-    private void prueba(int numRes, int numVar){
+    private void prueba(int numRes, int numVar) {
         LinearLayout layout = (LinearLayout) findViewById(R.id.captura_datos);
         layout.setOrientation(LinearLayout.VERTICAL);  //Can also be done in xml by android:orientation="vertical"
 
@@ -130,9 +133,48 @@ public class SimplexTableActivity extends AppCompatActivity{
         }
     }
 
-    private void capturaDatos(int vars, int res){
+    private void capturaDatos() {
+        matrix = new double[numRes + 1][numVar + numRes + 1];
+        int index = 1;
         LinearLayout layout = (LinearLayout) findViewById(R.id.captura_datos);
         layout.setOrientation(LinearLayout.VERTICAL);  //Can also be done in xml by android:orientation="vertical"
+        for (int i = 0; i < numVar + 1; i++) {
+            LinearLayout row = new LinearLayout(this);
+            row.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            for (int j = 0; j < 2; j++) {
+
+                if (j == 0) {
+                    TextView view = new TextView(this);
+                    view.setTextSize(30);
+                    view.setGravity(Gravity.CENTER);
+                    view.setWidth(300);
+                    view.setHeight(250);
+                    if (i == numVar ) {
+                        view.setText("<=");
+                    } else {
+                        view.setText("X" + (index) + " =");
+                        index++;
+                    }
+
+                    row.addView(view);
+                }else {
+                    EditText text = new EditText(this);
+                    text.setInputType(InputType.TYPE_CLASS_NUMBER);
+                    text.setWidth(300);
+                    //text.setHeight(250);
+                    text.setGravity(Gravity.CENTER);
+                    text.setTextSize(30);
+                    row.addView(text);
+                }
+
+            }
+
+
+            layout.addView(row);
+        }
+
     }
+
+
 
 }
