@@ -12,26 +12,19 @@ public class Simplex {
     private int colEntrada = 0;
     private double pivote = 0;
     private int renglonSalida = 0;
-    private ArrayList<double[][]> tablas;
+
 
     public Simplex(double[][] matrix) {
        // this.matrix = matrix;
-        this.numVars = numVars;
-        this.numRestrictions = numRestrictions;
-        tablas = new ArrayList<double[][]>();
-        processing();
+
+
         //this.z = new int[numVars + 1];
         // this.matrix = new int [numVars + numRestrictions + 1][numRestrictions + 1];
 
     }
 
     // metodo de procesamiento que finaliza una ves encontrado el resultado optimo
-    public void processing() {
-        while (!this.finish) {
-            tablas.add(matrix);
-            comprobacion();
-        }
-    }
+
 
     //obtiene el numero mas negativo de la fucion objetivo
     private void obtenerMenor() {
@@ -46,14 +39,15 @@ public class Simplex {
     }
 
     //comprueba si en la funcion objetivo hay numeros negativos
-    private void comprobacion() {
+    public boolean comprobacion() {
         this.menor = 0;
         obtenerMenor();
 
         if (this.menor < 0) {
-            operacion(matrix);
+            operacion();
+           return false;
         } else {
-            finish = true;
+            return true;
 
         }
     }
@@ -84,7 +78,7 @@ public class Simplex {
     }
 
     // realiza los calculos en la matriz
-    private void operacion(double[][] matrix) {
+    private void operacion() {
         obtenerPivote();
 
         // se convierte el pivote en 1
@@ -110,8 +104,8 @@ public class Simplex {
 
     }
 
-    public ArrayList<double[][]> getTablas(){
-        return tablas;
+    public double[][] getMatrix(){
+        return matrix;
     }
 
 

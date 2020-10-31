@@ -6,4 +6,8 @@
     <string name="title_activity_main2">SIMPLEX</string>
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
+    <string name="Var">Ingrese el numero de variables:</string>
+    <string name="Res">Ingrese el numero de restricciones:</string>
+    <string name="siguiente">siguiente</string>
+
 </resources>

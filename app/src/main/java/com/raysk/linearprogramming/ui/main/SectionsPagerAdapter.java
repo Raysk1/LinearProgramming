@@ -19,31 +19,38 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     private final Context mContext;
 
 
-    private String[] title;
 
-    public SectionsPagerAdapter(Context context, FragmentManager fm,String[] title) {
+    private int paginas;
+
+    public SectionsPagerAdapter(Context context, FragmentManager fm, int paginas) {
         super(fm);
         mContext = context;
-        this.title = title;
+        this.paginas = paginas;
+
     }
 
     @Override
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
         // Return a PlaceholderFragment (defined as a static inner class below).
-        return PlaceholderFragment.newInstance(position + 1);
+        //paginas = position + 1;
+        return PlaceholderFragment.newInstance(position+1);
     }
 
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
-        return title[position];
+        if (position == 0){
+            return "Tabla inicial";
+        }else {
+            return "tabla" + (position);
+        }
     }
 
     @Override
     public int getCount() {
         // Show 2 total pages.
-        return title.length;
+        return paginas;
     }
 
 

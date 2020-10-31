@@ -13,24 +13,22 @@ public class DinamicTable {
     private TableLayout tableLayout;
     private Context context;
     private String[] header;
-    private ArrayList<double[][]> matrix;
+    private double[][] matrix;
     private String[][] data;
     private TableRow tableRow;
     private TextView textCell;
     private int rests, vars;
-    private final int id;
     private final int height = 130;
     private final int widht = 250;
 
-    public DinamicTable(TableLayout tableLayout, Context context, ArrayList<double[][]> matrix, int id) {
+    public DinamicTable(TableLayout tableLayout, Context context, double[][] matrix) {
         this.tableLayout = tableLayout;
         this.context = context;
         this.matrix = matrix;
-        this.id = id;
-        rests = matrix.get(0)[0].length - 1;
-        vars = matrix.get(0).length - vars - 1;
-        header = new String[matrix.get(0)[0].length + 1];
-        data = new String[matrix.get(0).length][matrix.get(0)[0].length + 1];
+        rests = matrix[0].length - 1;
+        vars = matrix.length - vars - 1;
+        header = new String[matrix[0].length + 1];
+        data = new String[matrix.length][matrix[0].length + 1];
         setHeader();
 
 
@@ -75,7 +73,7 @@ public class DinamicTable {
 
     private void createHeader() {
         newRow();
-        for (int i = 0; i < matrix.get(id)[0].length + 1; i++) {
+        for (int i = 0; i < matrix[0].length + 1; i++) {
             newCell();
             textCell.setText(header[i]);
             textCell.setWidth(widht);
@@ -116,7 +114,7 @@ public class DinamicTable {
 
         for (int i = 0; i < data.length; i++) {
             for (int j = 1; j < data[0].length; j++) {
-                data[i][j] = Double.toString(matrix.get(id)[i][j - 1]);
+                data[i][j] = Double.toString(matrix[i][j - 1]);
             }
         }
     }
