@@ -1,6 +1,7 @@
 package com.raysk.linearprogramming;
 
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.Gravity;
@@ -136,42 +137,66 @@ public class SimplexTableActivity extends AppCompatActivity {
     private void capturaDatos() {
         matrix = new double[numRes + 1][numVar + numRes + 1];
         int index = 1;
+        int id = 1;
         LinearLayout layout = (LinearLayout) findViewById(R.id.captura_datos);
         layout.setOrientation(LinearLayout.VERTICAL);  //Can also be done in xml by android:orientation="vertical"
-        for (int i = 0; i < numVar + 1; i++) {
-            LinearLayout row = new LinearLayout(this);
-            row.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-            for (int j = 0; j < 2; j++) {
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
 
-                if (j == 0) {
-                    TextView view = new TextView(this);
-                    view.setTextSize(30);
-                    view.setGravity(Gravity.CENTER);
-                    view.setWidth(300);
-                    view.setHeight(250);
-                    if (i == numVar ) {
-                        view.setText("<=");
-                    } else {
-                        view.setText("X" + (index) + " =");
-                        index++;
+        for (int k = 0; k < numRes +1; k++) {
+            index = 1;
+            LinearLayout res = new LinearLayout(this);
+            res.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            TextView textView = new TextView(this);
+            textView.setTextSize(50);
+            textView.setBackgroundColor(Color.GREEN);
+            textView.setLayoutParams(params);
+            if (k ==0) {
+                textView.setText("Funcion Objetivo:");
+            }else {
+                textView.setText("Restriccion " + k);
+            }
+            res.addView(textView);
+            layout.addView(res);
+
+            for (int i = 0; i < numVar + 1; i++) {
+                LinearLayout row = new LinearLayout(this);
+                row.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                for (int j = 0; j < 2; j++) {
+
+                    if (j == 0) {
+                        TextView view = new TextView(this);
+                        view.setTextSize(30);
+                        view.setGravity(Gravity.CENTER);
+                        view.setWidth(300);
+                        view.setHeight(250);
+                        if (i == numVar ) {
+                            view.setText("<=");
+                        } else {
+                            view.setText("X" + (index) + " =");
+                            index++;
+                        }
+
+                        row.addView(view);
+                    }else {
+                        EditText text = new EditText(this);
+                        text.setInputType(InputType.TYPE_CLASS_NUMBER);
+                        text.setWidth(300);
+                        //text.setHeight(250);
+                        text.setGravity(Gravity.CENTER);
+                        text.setId(id++);
+                        text.setTextSize(30);
+                        row.addView(text);
                     }
 
-                    row.addView(view);
-                }else {
-                    EditText text = new EditText(this);
-                    text.setInputType(InputType.TYPE_CLASS_NUMBER);
-                    text.setWidth(300);
-                    //text.setHeight(250);
-                    text.setGravity(Gravity.CENTER);
-                    text.setTextSize(30);
-                    row.addView(text);
                 }
 
+
+                layout.addView(row);
             }
 
-
-            layout.addView(row);
         }
+
+
 
     }
 
