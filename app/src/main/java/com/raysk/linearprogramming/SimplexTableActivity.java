@@ -181,6 +181,7 @@ public class SimplexTableActivity extends AppCompatActivity {
                         row.addView(view);
                     } else {
                         EditText text = new EditText(this);
+
                         if (i == numVar && j == 1 && k== 0){
                             text.setText("0");
                             text.setVisibility(View.INVISIBLE);
@@ -189,7 +190,12 @@ public class SimplexTableActivity extends AppCompatActivity {
                         text.setWidth(300);
                         //text.setHeight(250);
                         text.setGravity(Gravity.CENTER);
-                        text.setId(id++);
+                        if (i == numVar){
+                            text.setTag("=");
+                        }else {
+                        text.setTag("var");
+
+                        }
                         text.setTextSize(30);
                         row.addView(text);
                         datos.add(text);
@@ -219,23 +225,28 @@ public class SimplexTableActivity extends AppCompatActivity {
 
     private void datosToMatrix(){
     int index = 0;
+    ArrayList<String> strings = new ArrayList<>();
 
         for (int i = 0; i <matrix.length ; i++) {
             matrix[i][matrix[i].length-1] = Double.parseDouble(datos.get(numVar + (i*(numVar+1))).getText().toString());
 
         }
 
+        for (int i = 0; i <datos.size() ; i++) {
+            if (!datos.get(i).getTag().equals("=")){
+                strings.add(datos.get(i).getText().toString());
+            }
+
+        }
+
 
         for (int i = 0; i <matrix.length ; i++) {
             for (int j = 0; j < numVar; j++) {
-                matrix[i][j] = Double.parseDouble(datos.get(index).getText().toString());
-                if (j == 0) {
-                    index++;
-                }else {
-                    index +=2;
-                }
+                matrix[i][j] = Double.parseDouble(strings.get(index));
+                index++;
             }
-        }
+            }
+
 
         for (int i = 0; i < matrix[0].length ; i++) {
             matrix[0][i] *= -1;
