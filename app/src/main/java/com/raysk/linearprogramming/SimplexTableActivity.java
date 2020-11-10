@@ -10,25 +10,24 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.tabs.TabLayout;
+import com.raysk.linearprogramming.graphics.DinamicTable;
 import com.raysk.linearprogramming.logic.Simplex;
-import com.raysk.linearprogramming.ui.main.SectionsPagerAdapter;
 
 import java.util.ArrayList;
 
 public class SimplexTableActivity extends AppCompatActivity {
-    private Simplex simplex;
     private EditText vars, res;
     private ArrayList<EditText> datos;
     private Button obtenerResul;
     private double[][] matrix;
     private int numVar, numRes;
+    private ArrayList<String[][]> tablas;
 
 
     @SuppressLint("ResourceType")
@@ -46,86 +45,75 @@ public class SimplexTableActivity extends AppCompatActivity {
 
 
 
-        obtenerResul.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        obtenerResul.setOnClickListener(v -> {
 
-                if (!validacionDeDatos()){
-                    Snackbar.make(findViewById(obtenerResul.getId()), "Rellene todos los campos", Snackbar.LENGTH_SHORT).show();
-                }else {
-                    datosToMatrix();
-                    setContentView(R.layout.simplex_table);
-                    SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(SimplexTableActivity.this, getSupportFragmentManager());
-                    ViewPager viewPager = findViewById(R.id.view_pager);
-                    viewPager.setAdapter(sectionsPagerAdapter);
-                    TabLayout tabs = findViewById(R.id.tabs);
-                    tabs.setupWithViewPager(viewPager);
-                }
+            if (!validacionDeDatos()){
+                Snackbar.make(findViewById(obtenerResul.getId()), "Rellene todos los campos", Snackbar.LENGTH_SHORT).show();
+            }else {
+                datosToMatrix();
+                setContentView(R.layout.simplex_table);
+                Simplex simplex = new Simplex(matrix);
+                tablas = simplex.processing();
+                presentarTabla();
+
             }
         });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 
 
-    private String[] getTabsTitles() {
-        String[] titles = new String[5];
-        titles[0] = "Tabla inicial";
-        titles[titles.length - 1] = "resultados";
+   @SuppressLint("SetTextI18n")
+   private void presentarTabla(){
+       LinearLayout linearLayout;
+       LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+       TextView textView;
+       TableLayout tableLayout = findViewById(R.id.tabla);
+       for (int i = 0; i < tablas.size() ; i++) {
+           linearLayout = new LinearLayout(this);
+           linearLayout.setLayoutParams(params);
 
-        for (int i = 1; i < titles.length - 1; i++) {
-            titles[i] = "Tabla " + i;
-        }
-        return titles;
-    }
+           textView = new TextView(this);
+           textView.setTextSize(50);
+           textView.setLayoutParams(params);
+           textView.setBackgroundColor(Color.GREEN);
+           if (i == 0){
+               textView.setText("Tabla inicial");
+           }else if (i == tablas.size()-1){
+               textView.setText("Tabla Resultado");
+           }else {
+               textView.setText("Tabla " + i);
+           }
+           linearLayout.addView(textView);
+           tableLayout.addView(linearLayout);
+           DinamicTable dinamicTable = new DinamicTable(tableLayout,this,tablas.get(i));
+           dinamicTable.get();
+
+       }
+   }
 
     private void capturaVarYRes() {
         vars = findViewById(R.id.Vars);
         res = findViewById(R.id.Rest);
         Button siguiente = findViewById(R.id.siguiente);
 
-        siguiente.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View v) {
+        siguiente.setOnClickListener(v -> {
 
 
-                if (vars.getText().toString().equals("") || res.getText().toString().equals("")) {
-                    Snackbar.make(findViewById(R.id.siguiente), "Rellene todos los campos", Snackbar.LENGTH_SHORT).show();
-                } else if (Integer.parseInt(vars.getText().toString()) == 0 || Integer.parseInt(res.getText().toString()) == 0) {
-                    Snackbar.make(findViewById(R.id.siguiente), "Los campos no pueden valer 0", Snackbar.LENGTH_SHORT).show();
+            if (vars.getText().toString().equals("") || res.getText().toString().equals("")) {
+                Snackbar.make(findViewById(R.id.siguiente), "Rellene todos los campos", Snackbar.LENGTH_SHORT).show();
+            } else if (Integer.parseInt(vars.getText().toString()) == 0 || Integer.parseInt(res.getText().toString()) == 0) {
+                Snackbar.make(findViewById(R.id.siguiente), "Los campos no pueden valer 0", Snackbar.LENGTH_SHORT).show();
 
-                }else if (Integer.parseInt(vars.getText().toString()) == 1){
-                    Snackbar.make(findViewById(R.id.siguiente), "El numero de variables debe de ser mayor a 1", Snackbar.LENGTH_SHORT).show();
+            }else if (Integer.parseInt(vars.getText().toString()) == 1){
+                Snackbar.make(findViewById(R.id.siguiente), "El numero de variables debe de ser mayor a 1", Snackbar.LENGTH_SHORT).show();
 
-                } else {
-                    setNumVar(Integer.parseInt(vars.getText().toString()));
-                    setNumRes(Integer.parseInt(res.getText().toString()));
-                    setContentView(R.layout.capturar_datos);
-                    //prueba(numRes,numVar);
-                    capturaDatos();
-                }
-
+            } else {
+                setNumVar(Integer.parseInt(vars.getText().toString()));
+                setNumRes(Integer.parseInt(res.getText().toString()));
+                setContentView(R.layout.capturar_datos);
+                //prueba(numRes,numVar);
+                capturaDatos();
             }
+
         });
 
     }
@@ -182,6 +170,9 @@ public class SimplexTableActivity extends AppCompatActivity {
                         view.setHeight(250);
                         if (i == numVar) {
                             view.setText("<=");
+                            if (k== 0){
+                                view.setVisibility(View.INVISIBLE);
+                            }
                         } else {
                             view.setText("X" + (index) + " =");
                             index++;
@@ -190,7 +181,11 @@ public class SimplexTableActivity extends AppCompatActivity {
                         row.addView(view);
                     } else {
                         EditText text = new EditText(this);
-                        text.setInputType(InputType.TYPE_CLASS_NUMBER);
+                        if (i == numVar && j == 1 && k== 0){
+                            text.setText("0");
+                            text.setVisibility(View.INVISIBLE);
+                        }
+                        text.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_SIGNED);
                         text.setWidth(300);
                         //text.setHeight(250);
                         text.setGravity(Gravity.CENTER);
@@ -242,20 +237,19 @@ public class SimplexTableActivity extends AppCompatActivity {
             }
         }
 
+        for (int i = 0; i < matrix[0].length ; i++) {
+            matrix[0][i] *= -1;
+        }
+
 
         for (int i = 1; i <matrix.length ; i++) {
             matrix[i][numVar++] = 1;
         }
 
 
-        for (int i = 0; i <matrix.length ; i++) {
-            System.out.println("///"+ i +"///");
-            for (int j = 0; j < matrix[i].length; j++) {
-                System.out.print(matrix[i][j] + " ");
-            }
-        }
 
-        System.out.println(matrix[0][0]);
+
+
 
 
         datos.clear();

@@ -7,25 +7,22 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 public class DinamicTable {
-    private TableLayout tableLayout;
-    private Context context;
-    private String[] header;
-    private double[][] matrix;
-    private String[][] data;
+    private final TableLayout tableLayout;
+    private final Context context;
+    private final String[] header;
+    private final String[][] matrix;
+    private final String[][] data;
     private TableRow tableRow;
     private TextView textCell;
-    private int rests, vars;
+    private int  vars;
     private final int height = 130;
     private final int widht = 250;
 
-    public DinamicTable(TableLayout tableLayout, Context context, double[][] matrix) {
+    public DinamicTable(TableLayout tableLayout, Context context, String[][] matrix) {
         this.tableLayout = tableLayout;
         this.context = context;
         this.matrix = matrix;
-        rests = matrix[0].length - 1;
         vars = matrix.length - vars - 1;
         header = new String[matrix[0].length + 1];
         data = new String[matrix.length][matrix[0].length + 1];
@@ -113,9 +110,8 @@ public class DinamicTable {
         }
 
         for (int i = 0; i < data.length; i++) {
-            for (int j = 1; j < data[0].length; j++) {
-                data[i][j] = Double.toString(matrix[i][j - 1]);
-            }
+            if (data[0].length - 1 >= 0)
+                System.arraycopy(matrix[i], 0, data[i], 1, data[0].length - 1);
         }
     }
 
