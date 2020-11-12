@@ -16,6 +16,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.raysk.linearprogramming.graphics.CapturaDatos;
 import com.raysk.linearprogramming.graphics.DinamicTable;
 import com.raysk.linearprogramming.logic.Simplex;
 
@@ -130,97 +131,9 @@ public class SimplexTableActivity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     private void capturaDatos() {
         matrix = new double[numRes + 1][numVar + numRes + 1];
-        int index;
-        int id = 1;
         LinearLayout layout = findViewById(R.id.captura_datos);
-        layout.setOrientation(LinearLayout.VERTICAL);  //Can also be done in xml by android:orientation="vertical"
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
-
-
-
-        for (int k = 0; k < numRes + 1; k++) {
-            index = 1;
-            LinearLayout res = new LinearLayout(this);
-            res.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-            TextView textView = new TextView(this);
-            textView.setTextSize(50);
-            textView.setBackgroundColor(Color.GREEN);
-            textView.setLayoutParams(params);
-
-
-            if (k == 0) {
-                textView.setText("Funcion Objetivo:");
-            } else {
-                textView.setText("Restriccion " + k + ":");
-            }
-            res.addView(textView);
-
-            layout.addView(res);
-
-            for (int i = 0; i < numVar + 1; i++) {
-                LinearLayout row = new LinearLayout(this);
-                row.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                for (int j = 0; j < 2; j++) {
-
-                    if (j == 0) {
-                        TextView view = new TextView(this);
-                        view.setTextSize(30);
-                        view.setGravity(Gravity.CENTER);
-                        view.setWidth(300);
-                        view.setHeight(250);
-                        if (i == numVar) {
-                            view.setText("<=");
-                            if (k== 0){
-                                view.setVisibility(View.INVISIBLE);
-                            }
-                        } else {
-                            view.setText("X" + (index) + " =");
-                            index++;
-                        }
-
-                        row.addView(view);
-                    } else {
-                        EditText text = new EditText(this);
-
-                        if (i == numVar && j == 1 && k== 0){
-                            text.setText("0");
-                            text.setVisibility(View.INVISIBLE);
-                        }
-                        text.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_SIGNED);
-                        text.setWidth(300);
-                        //text.setHeight(250);
-                        text.setGravity(Gravity.CENTER);
-                        if (i == numVar){
-                            text.setTag("=");
-                        }else {
-                        text.setTag("var");
-
-                        }
-                        text.setTextSize(30);
-                        row.addView(text);
-                        datos.add(text);
-                    }
-
-                }
-
-
-                layout.addView(row);
-            }
-
-        }
-
-        obtenerResul.setTextSize(40);
-        obtenerResul.setBackgroundColor(Color.CYAN);
-        obtenerResul.setLayoutParams(params);
-        obtenerResul.setText("Obtener Resultado");
-        LinearLayout res = new LinearLayout(this);
-        LinearLayout row = new LinearLayout(this);
-        row.addView(obtenerResul);
-        res.addView(row);
-        layout.addView(res);
-
-
-
+        CapturaDatos capturaDatos = new CapturaDatos(this,numVar,numRes,datos,layout,obtenerResul);
+        capturaDatos.capturar();
     }
 
     private void datosToMatrix(){
@@ -256,11 +169,6 @@ public class SimplexTableActivity extends AppCompatActivity {
         for (int i = 1; i <matrix.length ; i++) {
             matrix[i][numVar++] = 1;
         }
-
-
-
-
-
 
 
         datos.clear();
