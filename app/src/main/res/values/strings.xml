@@ -10,5 +10,7 @@
     <string name="Res">Ingrese el numero de restricciones:</string>
     <string name="siguiente">siguiente</string>
     <string name="Grafico">Grafico</string>
+    <string name="resultado">Resultado</string>
+    <string name="Volver">Volver a la grafica</string>
 
 </resources>
