@@ -222,7 +222,16 @@ public class GraficoActivity extends AppCompatActivity {
                 double m2 = (funciones.get(j + 1)[1].getX() - funciones.get(j + 1)[0].getX()) / (funciones.get(j + 1)[1].getY() - funciones.get(j + 1)[0].getY());
                 if (m1 != m2) {
                     double x1, x2, mult, res2, res1;
-                    if (resX1[j + 1] == 0 || resX1[i] == 0) {
+                    if ((resX1[i] == 0 && resX2[j + 1] == 0) || (resX1[j + 1] == 0 && resX2[i] == 0)) {
+                        if (resX1[i] == 0 && resX2[j + 1] == 0 ){
+                            res2 = resReul[i]/resX2[i];
+                            res1 = resReul[j+1]/resX1[j+1];
+                        }else {
+                            res2 = resReul[j+1]/resX2[j+1];
+                            res1 = resReul[i]/resX1[i];
+                        }
+
+                    } else if (resX1[j + 1] == 0 || resX1[i] == 0) {
                         mult = (resX2[i] / resX2[j + 1]) * -1;
                         x1 = resX1[i] + resX1[j + 1] * mult;
                         res1 = resReul[i] + resReul[j + 1] * mult;
@@ -344,7 +353,7 @@ public class GraficoActivity extends AppCompatActivity {
             for (int j = 0; j < resX1.length && flag; j++) {
                 double x1 = resX1[j] * intersecciones.get(i).getX();
                 double x2 = resX2[j] * intersecciones.get(i).getY();
-                if (x1 + x2 > resReul[j] || intersecciones.get(i).getX() < 0  || intersecciones.get(i).getY()< 0 ) {
+                if (x1 + x2 > resReul[j] || intersecciones.get(i).getX() < 0 || intersecciones.get(i).getY() < 0) {
                     flag = false;
                 }
             }
