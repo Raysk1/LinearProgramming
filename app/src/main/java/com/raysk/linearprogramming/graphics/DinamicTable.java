@@ -15,7 +15,7 @@ public class DinamicTable {
     private final String[][] data;
     private TableRow tableRow;
     private TextView textCell;
-    private int  vars;
+    private int rests, vars;
     private final int height = 130;
     private final int widht = 250;
 
@@ -23,7 +23,8 @@ public class DinamicTable {
         this.tableLayout = tableLayout;
         this.context = context;
         this.matrix = matrix;
-        vars = matrix.length - vars - 1;
+        rests = matrix.length - 1;
+        vars = matrix[0].length - rests -1;
         header = new String[matrix[0].length + 1];
         data = new String[matrix.length][matrix[0].length + 1];
         setHeader();
@@ -48,7 +49,7 @@ public class DinamicTable {
             i++;
 
         }
-        for (int j = 1; j <= vars; j++) {
+        for (int j = 1; j <= rests; j++) {
             header[i] = "h" + j;
             i++;
 
@@ -93,8 +94,6 @@ public class DinamicTable {
                 textCell.setText(datum[j]);
                 if (j == 0) {
                     textCell.setBackgroundColor(Color.RED);
-                } else {
-                    textCell.setBackgroundColor(Color.WHITE);
                 }
                 tableRow.addView(textCell, newTableRomParams());
 
