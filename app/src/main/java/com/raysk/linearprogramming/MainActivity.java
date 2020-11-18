@@ -12,23 +12,28 @@ import com.raysk.linearprogramming.logic.Simplex;
 
 public class MainActivity extends AppCompatActivity {
     Button simplexButton, graficoButton;
-    Intent intentToSimplex, intentToGrafico;
+    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        intentToSimplex = new Intent(this, SimplexTableActivity.class);
-        intentToGrafico = new Intent(this, GraficoActivity.class);
+        intent = new Intent(this,CapturarDatosActivity.class);
 
 
 
        simplexButton = (Button) findViewById(R.id.simplexButton);
-       simplexButton.setOnClickListener(v -> startActivity(intentToSimplex));
+       simplexButton.setOnClickListener(v -> {
+           intent.putExtra("id", 1);
+           startActivity(intent);
+       });
 
         graficoButton = (Button) findViewById(R.id.graficoButton);
-        graficoButton.setOnClickListener(v -> startActivity(intentToGrafico));
+        graficoButton.setOnClickListener(v -> {
+            intent.putExtra("id",2);
+            startActivity(intent);
+        });
 
 
 

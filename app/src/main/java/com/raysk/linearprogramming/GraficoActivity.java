@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.jjoe64.graphview.GraphView;
@@ -23,11 +24,11 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class GraficoActivity extends AppCompatActivity {
-    private int numRes = 1;
-    private int x1, x2;
+    private int numRes;
+    private double x1, x2;
     private double[] resX1, resX2, resReul;
     private Button obtenerResul;
-    private ArrayList<EditText> datos;
+    private double[] datos;
     private final ArrayList<DataPoint[]> restricciones = new ArrayList<>();
     private final ArrayList<DataPoint[]> funciones = new ArrayList<>();
     private ArrayList<DataPoint> intersecciones = new ArrayList<>();
@@ -38,15 +39,18 @@ public class GraficoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.captar_num_res);
+        setContentView(R.layout.grafica);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        obtenerResul = new Button(this);
-        obtenerResul.setId(851254);
+        Bundle d = this.getIntent().getExtras();
+        datos = (double[]) d.get("datos");
+        numRes = (int) d.getInt("numRes");
+        datosToArray();
+        datosToGrafica();
+
+        
 
 
-        obtenerResulButton();
 
-        capturarNumRes();
     }
 
     @SuppressLint("SetTextI18n")
@@ -87,34 +91,24 @@ public class GraficoActivity extends AppCompatActivity {
         return res;
     }
 
-    private void obtenerResulButton() {
-        obtenerResul.setOnClickListener(v -> {
 
-            if (!validacionDeDatos()) {
-                Snackbar.make(findViewById(obtenerResul.getId()), "Rellene todos los campos", Snackbar.LENGTH_SHORT).show();
-            } else {
-                datosToArray();
-                datosToGrafica();
-            }
-        });
-    }
 
     private void datosToArray() {
-        x1 = Integer.parseInt(datos.get(0).getText().toString());
-        x2 = Integer.parseInt(datos.get(1).getText().toString());
+        x1 = datos[0];
+        x2 = datos[1];
         resX1 = new double[numRes];
         resX2 = new double[numRes];
         resReul = new double[numRes];
 
         int cont = 0;
-        for (int i = 3; i < datos.size(); i += 3) {
+        for (int i = 3; i < datos.length; i += 3) {
             for (int j = 0; j < 3; j++) {
                 if (j == 0) {
-                    resX1[cont] = Double.parseDouble(datos.get(i + j).getText().toString());
+                    resX1[cont] = datos[i+j];
                 } else if (j == 1) {
-                    resX2[cont] = Double.parseDouble(datos.get(i + j).getText().toString());
+                    resX2[cont] = datos[i+j];
                 } else {
-                    resReul[cont] = Double.parseDouble(datos.get(i + j).getText().toString());
+                    resReul[cont] = datos[i+j];
                 }
             }
             cont++;
@@ -173,7 +167,6 @@ public class GraficoActivity extends AppCompatActivity {
 
 
     private void datosToGrafica() {
-        setContentView(R.layout.grafica);
         getRandomColors();
         getIntersecciones();
         GraphView graph = (GraphView) findViewById(R.id.graph);
@@ -263,39 +256,11 @@ public class GraficoActivity extends AppCompatActivity {
         }
     }
 
-    private void capturarNumRes() {
-        Button siguienteButton = findViewById(R.id.siguiente2);
-        EditText rest = findViewById(R.id.rest);
-        siguienteButton.setOnClickListener(v -> {
-            if (rest.getText().toString().equals("")) {
-                Snackbar.make(findViewById(R.id.siguiente2), "Rellene el campo", Snackbar.LENGTH_SHORT).show();
-            } else if (Integer.parseInt(rest.getText().toString()) < 2) {
-                Snackbar.make(findViewById(R.id.siguiente2), "Se deben utilizar 2 o mas restricciones", Snackbar.LENGTH_SHORT).show();
-            } else {
-                numRes = Integer.parseInt(rest.getText().toString());
-                setContentView(R.layout.capturar_datos);
-                capturaDatos();
-            }
-        });
-    }
 
-    private void capturaDatos() {
-        datos = new ArrayList<>();
-        LinearLayout layout = findViewById(R.id.captura_datos);
-        int numVar = 2;
-        CapturaDatos capturaDatos = new CapturaDatos(this, numVar, numRes, datos, layout, obtenerResul);
-        capturaDatos.capturar();
-    }
 
-    private boolean validacionDeDatos() {
-        boolean aux = true;
-        for (int i = 0; i < datos.size() && aux; i++) {
-            if (datos.get(i).getText().toString().equals("")) {
-                aux = false;
-            }
-        }
-        return aux;
-    }
+
+
+
 
 
     private DataPoint[] revertir(DataPoint[] dataPoints) {

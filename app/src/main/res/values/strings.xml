@@ -1,16 +1,13 @@
 <resources>
     <string name="app_name">Linear Programming</string>
-    <string name="Title">Programacion Lineal</string>
-    <string name="Selecione">Seleccione un metodo:</string>
+    <string name="Title">Programacíon Lineal</string>
+    <string name="Selecione">Seleccione un método:</string>
     <string name="Simplex">Simplex</string>
     <string name="title_activity_main2">SIMPLEX</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
-    <string name="Var">Ingrese el numero de variables:</string>
-    <string name="Res">Ingrese el numero de restricciones:</string>
+    <string name="Var">Ingrese el número de variables:</string>
+    <string name="Res">Ingrese el número de restricciones:</string>
     <string name="siguiente">siguiente</string>
-    <string name="Grafico">Grafico</string>
+    <string name="Grafico">Gráfico</string>
     <string name="resultado">Resultado</string>
-    <string name="Volver">Volver a la grafica</string>
 
 </resources>

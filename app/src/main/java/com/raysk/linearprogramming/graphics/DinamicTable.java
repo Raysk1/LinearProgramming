@@ -15,9 +15,11 @@ public class DinamicTable {
     private final String[][] data;
     private TableRow tableRow;
     private TextView textCell;
-    private int rests, vars;
+    private final int rests;
+    private final int vars;
     private final int height = 130;
     private final int widht = 250;
+    private int pos;
 
     public DinamicTable(TableLayout tableLayout, Context context, String[][] matrix) {
         this.tableLayout = tableLayout;
@@ -105,12 +107,14 @@ public class DinamicTable {
     private void setDataTable() {
         data[0][0] = "Zj - Cj";
         for (int i = 1; i < data.length; i++) {
-            data[i][0] = "h" + i;
+
+                data[i][0] = "h" + i;
         }
 
         for (int i = 0; i < data.length; i++) {
-            if (data[0].length - 1 >= 0)
+            if (data[0].length - 1 >= 0) {
                 System.arraycopy(matrix[i], 0, data[i], 1, data[0].length - 1);
+            }
         }
     }
 
@@ -120,8 +124,5 @@ public class DinamicTable {
         params.weight = 50;
         return params;
     }
-
-    //convierte decimales a fracciones
-
 }
 

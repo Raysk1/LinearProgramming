@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.LinearProgramming">
-        <activity android:name=".GraficoActivity"></activity>
+        <activity android:name=".CapturarDatosActivity"></activity>
+        <activity android:name=".GraficoActivity" />
         <activity
             android:name=".SimplexTableActivity"
             android:label="@string/title_activity_main2"
