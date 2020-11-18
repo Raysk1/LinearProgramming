@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:text="@string/Selecione"
         android:textAlignment="center"
-        android:textColor="#040303"
+        android:textColor="@color/dark_blue"
         android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"

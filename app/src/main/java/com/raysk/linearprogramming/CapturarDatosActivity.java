@@ -39,8 +39,8 @@ public class CapturarDatosActivity extends AppCompatActivity {
             capturaVarYRes();
             obtenerResul.setOnClickListener(v -> {
 
-                if (!validacionDeDatos()){
-                    Snackbar.make(findViewById(obtenerResul.getId()), "Rellene todos los campos", Snackbar.LENGTH_SHORT).show();
+                if (validacionDeDatos()) {
+                    Snackbar.make(findViewById(obtenerResul.getId()), "Rellene todos los campos", Snackbar.LENGTH_LONG).show();
                 }else {
                     datosToMatrix();
                     Intent intent = new Intent(this,SimplexTableActivity.class);
@@ -55,7 +55,7 @@ public class CapturarDatosActivity extends AppCompatActivity {
             capturarNumRes();
             obtenerResul.setOnClickListener(v -> {
 
-                if (!validacionDeDatos()) {
+                if (validacionDeDatos()) {
                     Snackbar.make(findViewById(obtenerResul.getId()), "Rellene todos los campos", Snackbar.LENGTH_SHORT).show();
                 } else {
                     Intent intent = new Intent(this,GraficoActivity.class);
@@ -77,14 +77,16 @@ public class CapturarDatosActivity extends AppCompatActivity {
 
 
             if (vars.getText().toString().equals("") || res.getText().toString().equals("")) {
-                Snackbar.make(findViewById(R.id.siguiente), "Rellene todos los campos", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(R.id.siguiente), "Rellene todos los campos", Snackbar.LENGTH_LONG).show();
             } else if (Integer.parseInt(vars.getText().toString()) == 0 || Integer.parseInt(res.getText().toString()) == 0) {
-                Snackbar.make(findViewById(R.id.siguiente), "Los campos no pueden valer 0", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(R.id.siguiente), "Los campos no pueden valer 0", Snackbar.LENGTH_LONG).show();
 
             }else if (Integer.parseInt(vars.getText().toString()) == 1){
-                Snackbar.make(findViewById(R.id.siguiente), "El numero de variables debe de ser mayor a 1", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(R.id.siguiente), "El numero de variables debe de ser mayor a 1", Snackbar.LENGTH_LONG).show();
 
-            } else {
+            } else if (Integer.parseInt(vars.getText().toString()) > 50 || Integer.parseInt(res.getText().toString()) > 50){
+                Snackbar.make(findViewById(siguiente.getId()), "El numero de variables o restricciones no debe ser mayor a 50", Snackbar.LENGTH_LONG).show();
+            }else {
                 numVar = (Integer.parseInt(vars.getText().toString()));
 
                 numRes = (Integer.parseInt(res.getText().toString()));
@@ -116,7 +118,7 @@ public class CapturarDatosActivity extends AppCompatActivity {
                 aux = false;
             }
         }
-        return aux;
+        return !aux;
     }
     private void datosToMatrix(){
 
@@ -173,10 +175,12 @@ public class CapturarDatosActivity extends AppCompatActivity {
         EditText rest = findViewById(R.id.rest);
         siguienteButton.setOnClickListener(v -> {
             if (rest.getText().toString().equals("")) {
-                Snackbar.make(findViewById(R.id.siguiente2), "Rellene el campo", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(R.id.siguiente2), "Rellene el campo", Snackbar.LENGTH_LONG).show();
             } else if (Integer.parseInt(rest.getText().toString()) < 2) {
-                Snackbar.make(findViewById(R.id.siguiente2), "Se deben utilizar 2 o mas restricciones", Snackbar.LENGTH_SHORT).show();
-            } else {
+                Snackbar.make(findViewById(R.id.siguiente2), "Se deben utilizar 2 o mas restricciones", Snackbar.LENGTH_LONG).show();
+            } else if (Integer.parseInt(rest.getText().toString()) > 50){
+                Snackbar.make(findViewById(R.id.siguiente2), "El numero de restricciones no debe ser mayor a 50", Snackbar.LENGTH_LONG).show();
+            }else {
                 numRes = Integer.parseInt(rest.getText().toString());
                 setContentView(R.layout.capturar_datos);
                 capturaDatos();

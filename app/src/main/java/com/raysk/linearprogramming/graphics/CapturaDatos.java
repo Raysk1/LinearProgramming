@@ -52,9 +52,9 @@ public class CapturaDatos{
 
 
             if (k == 0) {
-                textView.setText("Funcion Objetivo:");
+                textView.setText("Función Objetivo:");
             } else {
-                textView.setText("Restriccion " + k + ":");
+                textView.setText("Restricción " + k + ":");
             }
             res.addView(textView);
 

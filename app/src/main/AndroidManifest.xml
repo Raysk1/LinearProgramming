@@ -8,13 +8,19 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.LinearProgramming">
-        <activity android:name=".CapturarDatosActivity"></activity>
-        <activity android:name=".GraficoActivity" />
+        android:theme="@style/Theme.LinearProgramming.NoActionBar">
+        <activity
+            android:name=".CapturarDatosActivity"
+            android:label="INGRESAR DATOS"
+            android:theme="@style/Theme.LinearProgramming"/>
+        <activity
+            android:name=".GraficoActivity"
+            android:label="MÉTODO GRÁFICO"
+            android:theme="@style/Theme.LinearProgramming"/>
         <activity
             android:name=".SimplexTableActivity"
             android:label="@string/title_activity_main2"
-            android:theme="@style/Theme.LinearProgramming.NoActionBar" />
+            android:theme="@style/Theme.LinearProgramming" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

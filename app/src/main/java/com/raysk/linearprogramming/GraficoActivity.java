@@ -4,20 +4,16 @@ import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.EditText;
+import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.PointsGraphSeries;
-import com.raysk.linearprogramming.graphics.CapturaDatos;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,7 +23,6 @@ public class GraficoActivity extends AppCompatActivity {
     private int numRes;
     private double x1, x2;
     private double[] resX1, resX2, resReul;
-    private Button obtenerResul;
     private double[] datos;
     private final ArrayList<DataPoint[]> restricciones = new ArrayList<>();
     private final ArrayList<DataPoint[]> funciones = new ArrayList<>();
@@ -43,7 +38,7 @@ public class GraficoActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         Bundle d = this.getIntent().getExtras();
         datos = (double[]) d.get("datos");
-        numRes = (int) d.getInt("numRes");
+        numRes = d.getInt("numRes");
         datosToArray();
         datosToGrafica();
 
@@ -54,7 +49,7 @@ public class GraficoActivity extends AppCompatActivity {
     }
 
     @SuppressLint("SetTextI18n")
-    private void siguienteButton() {
+   /* private void siguienteButton() {
         Button siguiente = findViewById(R.id.siguiente3);
         double[] res = getX1X2Z();
 
@@ -70,7 +65,7 @@ public class GraficoActivity extends AppCompatActivity {
             z.setText("Z: " + res[2]);
         });
 
-    }
+    }*/
 
     private double[] getX1X2Z() {
         double mayor = 0;
@@ -166,9 +161,116 @@ public class GraficoActivity extends AppCompatActivity {
     }
 
 
+    @SuppressLint("SetTextI18n")
     private void datosToGrafica() {
         getRandomColors();
         getIntersecciones();
+        DataPoint[] points = interDataPoints();
+        double[] xyz = getX1X2Z();
+        double maxX = maxX();
+        double maxY = maxY();
+        LinearLayout principal = findViewById(R.id.principal);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT,40);
+        for (int i = 0; i < 4 ; i++) {
+            for (int j = 0; j < 2 ; j++) {
+                if (j == 0){
+                    TextView textView = new TextView(this);
+                    textView.setLayoutParams(params);
+                    textView.setBackgroundColor(Color.GREEN);
+                    textView.setTextSize(50);
+                    if (i == 1){
+                        textView.setText("Puntos Posibles");
+                    }else if (i == 2){
+                        textView.setText("Punto Óptimo");
+                    }else if (i == 3){
+                        textView.setText("Resultado");
+                    }else {
+                        textView.setText("Area Solución");
+                    }
+
+                    principal.addView(textView);
+                }else {
+                    if (i == 3){
+                        for (int l = 0; l < 3; l++) {
+                            LinearLayout layout = new LinearLayout(this);
+                            TextView textView = new TextView(this);
+                            textView.setTextSize(50);
+                            textView.setLayoutParams(params);
+                            textView.setGravity(Gravity.END);
+                            TextView textView2 = new TextView(this);
+                            textView2.setTextSize(50);
+                            textView2.setLayoutParams(params);
+                            textView2.setTextColor(Color.BLUE);
+                            textView.setTextColor(Color.RED);
+                            //textView2.setGravity(Gravity.CENTER);
+                            textView2.setText(Double.toString(xyz[l]));
+                            if (l == 0){
+                                textView.setText("X1: ");
+                            }else if (l == 1){
+                                textView.setText("X2: ");
+                            }else {
+                                textView.setText("Z: ");
+                            }
+                            layout.addView(textView);
+                            layout.addView(textView2);
+                            principal.addView(layout);
+                        }
+                    }else {
+                        GraphView graphView = new GraphView(this);
+                        //graph.getViewport().setScrollable(true);
+                        //graph.getViewport().setScalable(true);
+                        //graphView.setLayoutParams(params);
+                        graphView.getViewport().setYAxisBoundsManual(true);
+                        graphView.getViewport().setXAxisBoundsManual(true);
+                        graphView.getViewport().setMaxX(maxX);
+                        graphView.getViewport().setMaxY(maxY);
+                        graphView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 800));
+                        for (int k = 0; k < funciones.size(); k++) {
+                            LineGraphSeries<DataPoint> series = new LineGraphSeries<>(funciones.get(k));
+                            series.setColor(colors[k]);
+                            //series.setDrawDataPoints(true);
+                            //series.setDataPointsRadius ( 20 );
+
+                            graphView.addSeries(series);
+                        }
+                        LineGraphSeries<DataPoint> areaSolucion = new LineGraphSeries<>(points);
+                        areaSolucion.setBackgroundColor(Color.argb(145, 63, 190, 63));
+                        areaSolucion.setDrawBackground(true);
+                        areaSolucion.setColor(Color.TRANSPARENT);
+                        graphView.addSeries(areaSolucion);
+
+
+                        if (i == 1) {
+                            PointsGraphSeries<DataPoint> series = new PointsGraphSeries<>(points);
+                            graphView.addSeries(series);
+                        } else if (i == 2) {
+                            DataPoint[] point = new DataPoint[1];
+                            point[0] = new DataPoint(xyz[0], xyz[1]);
+                            PointsGraphSeries<DataPoint> series = new PointsGraphSeries<>(point);
+                            series.setColor(Color.RED);
+                            graphView.addSeries(series);
+
+                        }
+                        principal.addView(graphView);
+                    }
+
+                }
+            }
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+        /*
         GraphView graph = (GraphView) findViewById(R.id.graph);
         //graph.getViewport().setScrollable(true);
         //graph.getViewport().setScalable(true);
@@ -203,6 +305,8 @@ public class GraficoActivity extends AppCompatActivity {
 
 
         //series.setBackgroundColor(Color.argb(145,63,190,63));
+
+         */
 
 
     }
