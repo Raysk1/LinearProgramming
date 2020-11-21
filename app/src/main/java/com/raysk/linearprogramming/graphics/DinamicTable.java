@@ -19,7 +19,6 @@ public class DinamicTable {
     private final int vars;
     private final int height = 130;
     private final int widht = 280;
-    private int pos;
 
     public DinamicTable(TableLayout tableLayout, Context context, String[][] matrix) {
         this.tableLayout = tableLayout;

@@ -96,8 +96,10 @@ public class CapturaDatos{
                         text.setGravity(Gravity.CENTER);
                         if (i == numVar){
                             text.setTag("=");
+                            text.setInputType(InputType.TYPE_CLASS_NUMBER);
                         }else {
                             text.setTag("var");
+                            text.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_SIGNED);
 
                         }
                         text.setTextSize(30);

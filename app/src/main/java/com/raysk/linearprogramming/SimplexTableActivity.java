@@ -36,7 +36,6 @@ public class SimplexTableActivity extends AppCompatActivity {
         Simplex simplex = new Simplex(matrix);
         tablas = simplex.processing();
         presentarTabla();
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
     }
 
@@ -56,11 +55,11 @@ public class SimplexTableActivity extends AppCompatActivity {
             textView.setLayoutParams(params);
             textView.setBackgroundColor(Color.GREEN);
             if (i == 0) {
-                textView.setText("Tabla Inicial");
+                textView.setText(R.string.tabla_inicial);
             } else if (i == tablas.size() - 1) {
-                textView.setText("Tabla Resultado");
+                textView.setText(R.string.tabla_resultado);
             } else if (i == tablas.size()) {
-                textView.setText("Resultado");
+                textView.setText(R.string.resultado);
             } else {
                 textView.setText("Tabla " + i);
             }

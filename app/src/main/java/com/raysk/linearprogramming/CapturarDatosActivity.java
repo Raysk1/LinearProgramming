@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,7 +21,6 @@ public class CapturarDatosActivity extends AppCompatActivity {
     private int numRes;
     private ArrayList<EditText> datos;
     private Button obtenerResul;
-    private int id;
     private double[][] matrix;
     private  int index = 0;
 
@@ -28,8 +28,9 @@ public class CapturarDatosActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         Bundle d = this.getIntent().getExtras();
-        id = d.getInt("id");
+        int id = d.getInt("id");
         datos = new ArrayList<>();
         obtenerResul = new Button(this);
         obtenerResul.setId(560000000);
@@ -40,7 +41,7 @@ public class CapturarDatosActivity extends AppCompatActivity {
             obtenerResul.setOnClickListener(v -> {
 
                 if (validacionDeDatos()) {
-                    Snackbar.make(findViewById(obtenerResul.getId()), "Rellene todos los campos", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(findViewById(obtenerResul.getId()), R.string.rellene_campos, Snackbar.LENGTH_LONG).show();
                 }else {
                     datosToMatrix();
                     Intent intent = new Intent(this,SimplexTableActivity.class);
@@ -55,7 +56,7 @@ public class CapturarDatosActivity extends AppCompatActivity {
             obtenerResul.setOnClickListener(v -> {
 
                 if (validacionDeDatos()) {
-                    Snackbar.make(findViewById(obtenerResul.getId()), "Rellene todos los campos", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(obtenerResul.getId()), R.string.rellene_campos, Snackbar.LENGTH_SHORT).show();
                 } else {
                     Intent intent = new Intent(this,GraficoActivity.class);
                     intent.putExtra("datos",datosToArray());
@@ -76,15 +77,15 @@ public class CapturarDatosActivity extends AppCompatActivity {
 
 
             if (vars.getText().toString().equals("") || res.getText().toString().equals("")) {
-                Snackbar.make(findViewById(R.id.siguiente), "Rellene todos los campos", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(findViewById(R.id.siguiente), R.string.rellene_campos, Snackbar.LENGTH_LONG).show();
             } else if (Integer.parseInt(vars.getText().toString()) == 0 || Integer.parseInt(res.getText().toString()) == 0) {
-                Snackbar.make(findViewById(R.id.siguiente), "Los campos no pueden valer 0", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(findViewById(R.id.siguiente), R.string.Campos_dif_0, Snackbar.LENGTH_LONG).show();
 
             }else if (Integer.parseInt(vars.getText().toString()) == 1){
-                Snackbar.make(findViewById(R.id.siguiente), "El numero de variables debe de ser mayor a 1", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(findViewById(R.id.siguiente), R.string.num_mayor_1, Snackbar.LENGTH_LONG).show();
 
             } else if (Integer.parseInt(vars.getText().toString()) > 50 || Integer.parseInt(res.getText().toString()) > 50){
-                Snackbar.make(findViewById(siguiente.getId()), "El numero de variables o restricciones no debe ser mayor a 50", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(findViewById(siguiente.getId()), R.string.num_res_menor, Snackbar.LENGTH_LONG).show();
             }else {
                 numVar = (Integer.parseInt(vars.getText().toString()));
 
@@ -113,7 +114,7 @@ public class CapturarDatosActivity extends AppCompatActivity {
     private boolean validacionDeDatos(){
         boolean aux  = true;
         for (int i = 0; i < datos.size() && aux  ; i++) {
-            if (datos.get(i).getText().toString().equals("")){
+            if (datos.get(i).getText().toString().equals("") || datos.get(i).getText().toString().equals("-")){
                 aux = false;
             }
         }
@@ -175,11 +176,11 @@ public class CapturarDatosActivity extends AppCompatActivity {
         EditText rest = findViewById(R.id.rest);
         siguienteButton.setOnClickListener(v -> {
             if (rest.getText().toString().equals("")) {
-                Snackbar.make(findViewById(R.id.siguiente2), "Rellene el campo", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(findViewById(R.id.siguiente2), R.string.rellene_campo, Snackbar.LENGTH_LONG).show();
             } else if (Integer.parseInt(rest.getText().toString()) < 2) {
-                Snackbar.make(findViewById(R.id.siguiente2), "Se deben utilizar 2 o mas restricciones", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(findViewById(R.id.siguiente2), R.string.min_res, Snackbar.LENGTH_LONG).show();
             } else if (Integer.parseInt(rest.getText().toString()) > 50){
-                Snackbar.make(findViewById(R.id.siguiente2), "El numero de restricciones no debe ser mayor a 50", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(findViewById(R.id.siguiente2), R.string.num_max, Snackbar.LENGTH_LONG).show();
             }else {
                 numRes = Integer.parseInt(rest.getText().toString());
                 setContentView(R.layout.capturar_datos);
