@@ -18,7 +18,7 @@ public class DinamicTable {
     private final int rests;
     private final int vars;
     private final int height = 130;
-    private final int widht = 250;
+    private final int widht = 280;
     private int pos;
 
     public DinamicTable(TableLayout tableLayout, Context context, String[][] matrix) {
@@ -29,8 +29,8 @@ public class DinamicTable {
         vars = matrix[0].length - rests -1;
         header = new String[matrix[0].length + 1];
         data = new String[matrix.length][matrix[0].length + 1];
+        redondear();
         setHeader();
-
 
     }
 
@@ -123,6 +123,18 @@ public class DinamicTable {
         params.setMargins(10, 10, 10, 10);
         params.weight = 50;
         return params;
+    }
+
+    private void redondear(){
+        for (int i = 0; i <matrix.length ; i++) {
+            for (int j = 0; j <matrix[i].length ; j++) {
+                double aux = Double.parseDouble(matrix[i][j]);
+                aux = Math.round(aux*1000);
+                aux /= 1000;
+                matrix[i][j] = Double.toString(aux);
+            }
+
+        }
     }
 }
 

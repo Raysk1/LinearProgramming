@@ -2,12 +2,17 @@ package com.raysk.linearprogramming;
 
 import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.jjoe64.graphview.GraphView;
@@ -28,12 +33,16 @@ public class GraficoActivity extends AppCompatActivity {
     private final ArrayList<DataPoint[]> funciones = new ArrayList<>();
     private ArrayList<DataPoint> intersecciones = new ArrayList<>();
     private int[] colors;
+    private DataPoint[] corregirGrafica;
+    private boolean corregir = false;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        corregirGrafica = new DataPoint[2];
         setContentView(R.layout.grafica);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         Bundle d = this.getIntent().getExtras();
@@ -48,24 +57,6 @@ public class GraficoActivity extends AppCompatActivity {
 
     }
 
-    @SuppressLint("SetTextI18n")
-   /* private void siguienteButton() {
-        Button siguiente = findViewById(R.id.siguiente3);
-        double[] res = getX1X2Z();
-
-
-        siguiente.setOnClickListener(v -> {
-            setContentView(R.layout.resultados_grafica);
-            TextView x1, x2, z;
-            x1 = findViewById(R.id.x1);
-            x2 = findViewById(R.id.x2);
-            z = findViewById(R.id.z);
-            x1.setText("X1: " + res[0]);
-            x2.setText("X2: " + res[1]);
-            z.setText("Z: " + res[2]);
-        });
-
-    }*/
 
     private double[] getX1X2Z() {
         double mayor = 0;
@@ -161,9 +152,13 @@ public class GraficoActivity extends AppCompatActivity {
     }
 
 
-    @SuppressLint("SetTextI18n")
+
+    @SuppressLint({"SetTextI18n", "ResourceType"})
     private void datosToGrafica() {
         getRandomColors();
+        TypedValue outValue = new TypedValue();
+        getTheme().resolveAttribute(R.attr.colorOnPrimary, outValue, true);
+        final int color = outValue.data;
         getIntersecciones();
         DataPoint[] points = interDataPoints();
         double[] xyz = getX1X2Z();
@@ -202,14 +197,15 @@ public class GraficoActivity extends AppCompatActivity {
                             textView2.setLayoutParams(params);
                             textView2.setTextColor(Color.BLUE);
                             textView.setTextColor(Color.RED);
-                            //textView2.setGravity(Gravity.CENTER);
-                            textView2.setText(Double.toString(xyz[l]));
+                            double aux = Math.round(xyz[l]*1000);
+                            aux /= 1000;
+                            textView2.setText(Double.toString(aux));
                             if (l == 0){
-                                textView.setText("X1: ");
+                                textView.setText(" X1: ");
                             }else if (l == 1){
-                                textView.setText("X2: ");
+                                textView.setText(" X2: ");
                             }else {
-                                textView.setText("Z: ");
+                                textView.setText(" Z: ");
                             }
                             layout.addView(textView);
                             layout.addView(textView2);
@@ -217,32 +213,44 @@ public class GraficoActivity extends AppCompatActivity {
                         }
                     }else {
                         GraphView graphView = new GraphView(this);
-                        //graph.getViewport().setScrollable(true);
-                        //graph.getViewport().setScalable(true);
-                        //graphView.setLayoutParams(params);
                         graphView.getViewport().setYAxisBoundsManual(true);
                         graphView.getViewport().setXAxisBoundsManual(true);
                         graphView.getViewport().setMaxX(maxX);
                         graphView.getViewport().setMaxY(maxY);
+                        if (intersecciones.size() >= 2) {
+                            LineGraphSeries<DataPoint> areaSolucion = new LineGraphSeries<>(points);
+                            areaSolucion.setBackgroundColor(Color.argb(125, 63, 190, 63));
+                            areaSolucion.setDrawBackground(true);
+                            areaSolucion.setColor(Color.TRANSPARENT);
+                            graphView.addSeries(areaSolucion);
+                            if (corregir) {
+
+                                LineGraphSeries<DataPoint> areaSolucion1 = new LineGraphSeries<>(corregirGrafica);
+                                areaSolucion1.setBackgroundColor(color);
+                                areaSolucion1.setDrawBackground(true);
+                                areaSolucion1.setColor(Color.TRANSPARENT);
+                                graphView.addSeries(areaSolucion1);
+
+                            }
+
+                        }
+
                         graphView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 800));
                         for (int k = 0; k < funciones.size(); k++) {
                             LineGraphSeries<DataPoint> series = new LineGraphSeries<>(funciones.get(k));
                             series.setColor(colors[k]);
-                            //series.setDrawDataPoints(true);
-                            //series.setDataPointsRadius ( 20 );
-
+                            series.setThickness(10);
                             graphView.addSeries(series);
                         }
-                        LineGraphSeries<DataPoint> areaSolucion = new LineGraphSeries<>(points);
-                        areaSolucion.setBackgroundColor(Color.argb(145, 63, 190, 63));
-                        areaSolucion.setDrawBackground(true);
-                        areaSolucion.setColor(Color.TRANSPARENT);
-                        graphView.addSeries(areaSolucion);
 
 
                         if (i == 1) {
                             PointsGraphSeries<DataPoint> series = new PointsGraphSeries<>(points);
                             graphView.addSeries(series);
+                            if (corregir){
+                                PointsGraphSeries<DataPoint> series1 = new PointsGraphSeries<>(corregirGrafica);
+                                graphView.addSeries(series1);
+                            }
                         } else if (i == 2) {
                             DataPoint[] point = new DataPoint[1];
                             point[0] = new DataPoint(xyz[0], xyz[1]);
@@ -258,55 +266,6 @@ public class GraficoActivity extends AppCompatActivity {
             }
 
         }
-
-
-
-
-
-
-
-
-
-
-
-
-        /*
-        GraphView graph = (GraphView) findViewById(R.id.graph);
-        //graph.getViewport().setScrollable(true);
-        //graph.getViewport().setScalable(true);
-        graph.getViewport().setYAxisBoundsManual(true);
-        graph.getViewport().setXAxisBoundsManual(true);
-        graph.getViewport().setMaxX(maxX());
-        graph.getViewport().setMaxY(maxY());
-
-        //graph.getViewport().setScalableY(true);
-        //graph.getSecondScale();
-
-        for (int i = 0; i < funciones.size(); i++) {
-            LineGraphSeries<DataPoint> series = new LineGraphSeries<>(funciones.get(i));
-            series.setColor(colors[i]);
-            //series.setDrawDataPoints(true);
-            series.setTitle("R" + (i + 1));
-            //series.setDataPointsRadius ( 20 );
-
-            graph.addSeries(series);
-        }
-
-        DataPoint[] points = interDataPoints();
-        PointsGraphSeries<DataPoint> series = new PointsGraphSeries<>(points);
-        graph.addSeries(series);
-
-        LineGraphSeries<DataPoint> areaSolucion = new LineGraphSeries<>(points);
-        areaSolucion.setBackgroundColor(Color.argb(145, 63, 190, 63));
-        areaSolucion.setDrawBackground(true);
-        areaSolucion.setColor(Color.TRANSPARENT);
-        graph.addSeries(areaSolucion);
-        siguienteButton();
-
-
-        //series.setBackgroundColor(Color.argb(145,63,190,63));
-
-         */
 
 
     }
@@ -417,12 +376,13 @@ public class GraficoActivity extends AppCompatActivity {
     private void comprobarIntersecciones() {
         ArrayList<DataPoint> tmp = new ArrayList<>();
         boolean flag;
+        //tmp.add(new DataPoint(0,0));
         for (int i = 0; i < intersecciones.size(); i++) {
             flag = true;
             for (int j = 0; j < resX1.length && flag; j++) {
                 double x1 = resX1[j] * intersecciones.get(i).getX();
                 double x2 = resX2[j] * intersecciones.get(i).getY();
-                if (x1 + x2 > resReul[j] || intersecciones.get(i).getX() < 0 || intersecciones.get(i).getY() < 0) {
+                if (x1 + x2 > resReul[j] || intersecciones.get(i).getX() < 0 || intersecciones.get(i).getY() < 0 ) {
                     flag = false;
                 }
             }
@@ -431,6 +391,7 @@ public class GraficoActivity extends AppCompatActivity {
             }
         }
         intersecciones = tmp;
+
     }
 
     private DataPoint[] interDataPoints() {
@@ -447,6 +408,24 @@ public class GraficoActivity extends AppCompatActivity {
                     DataPoint tmp = dataPoints[i + 1];
                     dataPoints[i + 1] = dataPoints[i];
                     dataPoints[i] = tmp;
+                }
+            }
+        }
+        if (dataPoints.length >= 3) {
+            for (int i = 0; i < dataPoints.length-2 && !corregir; i++) {
+                if (dataPoints[i].getY() > dataPoints[i+1].getY() && dataPoints[i+2].getY() > dataPoints[i+1].getY()){
+                    corregir = true;
+                    corregirGrafica[0] =dataPoints[i+1];
+                    corregirGrafica[1] = dataPoints[i+2];
+                    DataPoint[] aux = new DataPoint[dataPoints.length-1];
+                    for (int j = 0; j < dataPoints.length -1; j++) {
+                        if (j < i+1 ){
+                            aux[j] = dataPoints[j];
+                        }else{
+                            aux[j] = dataPoints[j+1];
+                        }
+                    }
+                    dataPoints = aux;
                 }
             }
         }

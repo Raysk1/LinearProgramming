@@ -44,7 +44,6 @@ public class CapturarDatosActivity extends AppCompatActivity {
                 }else {
                     datosToMatrix();
                     Intent intent = new Intent(this,SimplexTableActivity.class);
-                    index = 0;
                     intent.putExtra("matrix_simplex", matrix );
                     startActivity(intent);
 
@@ -123,6 +122,7 @@ public class CapturarDatosActivity extends AppCompatActivity {
     private void datosToMatrix(){
 
         ArrayList<String> strings = new ArrayList<>();
+        int vars = numVar;
 
 
         for (int i = 0; i <matrix.length ; i++) {
@@ -152,7 +152,7 @@ public class CapturarDatosActivity extends AppCompatActivity {
 
 
         for (int i = 1; i <matrix.length ; i++) {
-            matrix[i][numVar+1] = 1;
+            matrix[i][vars++] = 1;
         }
 
         index = 0;
