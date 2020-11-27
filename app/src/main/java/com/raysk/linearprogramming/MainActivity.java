@@ -11,7 +11,7 @@ import android.widget.Button;
 import com.raysk.linearprogramming.logic.Simplex;
 
 public class MainActivity extends AppCompatActivity {
-    Button simplexButton, graficoButton;
+    Button simplexButton, graficoButton, esqButton;
     Intent intent;
 
     @Override
@@ -32,6 +32,12 @@ public class MainActivity extends AppCompatActivity {
         graficoButton = (Button) findViewById(R.id.graficoButton);
         graficoButton.setOnClickListener(v -> {
             intent.putExtra("id",2);
+            startActivity(intent);
+        });
+
+        esqButton = findViewById(R.id.esqSupButton);
+        esqButton.setOnClickListener(v -> {
+            intent.putExtra("id",3);
             startActivity(intent);
         });
 

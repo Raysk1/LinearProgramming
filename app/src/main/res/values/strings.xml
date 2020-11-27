@@ -6,18 +6,21 @@
     <string name="title_activity_simplex">SIMPLEX</string>
     <string name="title_activity_capurar_datos">INGRESAR DATOS</string>
     <string name="title_activity_grafico">MÉTODO GRÁFICO</string>
+    <string name="title_activity_esq_sup_noroeste">ESQUINA SUPERIOR NOROESTE</string>
     <string name="Var">Ingrese el número de variables:</string>
     <string name="Res">Ingrese el número de restricciones:</string>
     <string name="siguiente">siguiente</string>
     <string name="Grafico">Gráfico</string>
+    <string name="esq_sup_noroeste">ESQ.SUP.NOROESTE</string>
     <string name="resultado">Resultado</string>
     <string name="rellene_campos">Rellene todos los campos</string>
     <string name="Campos_dif_0">Los campos no pueden valer 0</string>
-    <string name="num_mayor_1">El numero de variables debe de ser mayor a 1</string>
-    <string name="num_res_menor">El numero de variables o restricciones no debe ser mayor a 50</string>
+    <string name="num_mayor_1">El número de variables debe de ser mayor a 1</string>
+    <string name="num_res_menor">El número de variables o restricciones no debe ser mayor a 10</string>
+    <string name="num_max_or_des">El número de destinos u orígenes no debe ser mayor a 10</string>
     <string name="rellene_campo">Rellene el campo</string>
     <string name="min_res">Se deben utilizar 2 o mas restricciones</string>
-    <string name="num_max">El numero de restricciones no debe ser mayor a 50</string>
+    <string name="num_max">El número de restricciones no debe ser mayor a 10</string>
     <string name="puntos_posibles">Puntos Posibles</string>
     <string name="punto_optimo">Punto Óptimo</string>
     <string name="area_solucion">Área Solución</string>
@@ -25,5 +28,7 @@
     <string name="tabla_resultado">Tabla Resultado</string>
     <string name="tabla">Tabla</string>
     <string name="imposible_solucion">Este problema no tiene solución</string>
+    <string name="ingresar_destino">Ingrese el número de destinos:</string>
+    <string name="ingresar_origen">Ingrese el número de orígenes:</string>
 
 </resources>

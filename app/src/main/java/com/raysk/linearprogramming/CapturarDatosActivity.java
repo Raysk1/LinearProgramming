@@ -19,10 +19,13 @@ public class CapturarDatosActivity extends AppCompatActivity {
     private EditText vars, res;
     private int numVar;
     private int numRes;
+    private int numOrigen;
+    private int numDestino;
     private ArrayList<EditText> datos;
     private Button obtenerResul;
     private double[][] matrix;
     private  int index = 0;
+    private LinearLayout layout;
 
     @SuppressLint("ResourceType")
     @Override
@@ -31,6 +34,7 @@ public class CapturarDatosActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         Bundle d = this.getIntent().getExtras();
         int id = d.getInt("id");
+
         datos = new ArrayList<>();
         obtenerResul = new Button(this);
         obtenerResul.setId(560000000);
@@ -43,7 +47,7 @@ public class CapturarDatosActivity extends AppCompatActivity {
                 if (validacionDeDatos()) {
                     Snackbar.make(findViewById(obtenerResul.getId()), R.string.rellene_campos, Snackbar.LENGTH_LONG).show();
                 }else {
-                    datosToMatrix();
+                    datosToMatrixSimplex();
                     Intent intent = new Intent(this,SimplexTableActivity.class);
                     intent.putExtra("matrix_simplex", matrix );
                     startActivity(intent);
@@ -56,7 +60,7 @@ public class CapturarDatosActivity extends AppCompatActivity {
             obtenerResul.setOnClickListener(v -> {
 
                 if (validacionDeDatos()) {
-                    Snackbar.make(findViewById(obtenerResul.getId()), R.string.rellene_campos, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(obtenerResul.getId()), R.string.rellene_campos, Snackbar.LENGTH_LONG).show();
                 } else {
                     Intent intent = new Intent(this,GraficoActivity.class);
                     intent.putExtra("datos",datosToArray());
@@ -65,6 +69,22 @@ public class CapturarDatosActivity extends AppCompatActivity {
                 }
             });
             
+        }else if (id == 3){
+            setContentView(R.layout.captar_des_origen);
+            capturaDesOr();
+            obtenerResul.setOnClickListener(v -> {
+
+                if (validacionDeDatos()) {
+                    Snackbar.make(findViewById(obtenerResul.getId()), R.string.rellene_campos, Snackbar.LENGTH_LONG).show();
+                }else {
+                    datosToMatrixTransporte();
+                    Intent intent = new Intent(this,EsqSupNoroesteActivity.class);
+                    intent.putExtra("matrix", matrix );
+                    startActivity(intent);
+
+                }
+            });
+
         }
     }
 
@@ -84,7 +104,7 @@ public class CapturarDatosActivity extends AppCompatActivity {
             }else if (Integer.parseInt(vars.getText().toString()) == 1){
                 Snackbar.make(findViewById(R.id.siguiente), R.string.num_mayor_1, Snackbar.LENGTH_LONG).show();
 
-            } else if (Integer.parseInt(vars.getText().toString()) > 50 || Integer.parseInt(res.getText().toString()) > 50){
+            } else if (Integer.parseInt(vars.getText().toString()) > 10 || Integer.parseInt(res.getText().toString()) > 10){
                 Snackbar.make(findViewById(siguiente.getId()), R.string.num_res_menor, Snackbar.LENGTH_LONG).show();
             }else {
                 numVar = (Integer.parseInt(vars.getText().toString()));
@@ -98,29 +118,23 @@ public class CapturarDatosActivity extends AppCompatActivity {
         });
 
     }
-
-
-
     @SuppressLint("SetTextI18n")
     private void capturaDatoSimplex() {
+        layout = (LinearLayout) findViewById(R.id.captura_datos);
         matrix = new double[numRes + 1][numVar + numRes + 1];
-        LinearLayout layout = findViewById(R.id.captura_datos);
         CapturaDatos capturaDatos = new CapturaDatos(this,numVar,numRes,datos,layout,obtenerResul);
-        capturaDatos.capturar();
+
     }
-
-
-
     private boolean validacionDeDatos(){
         boolean aux  = true;
         for (int i = 0; i < datos.size() && aux  ; i++) {
-            if (datos.get(i).getText().toString().equals("") || datos.get(i).getText().toString().equals("-")){
+            if (datos.get(i).getText().toString().equals("") || datos.get(i).getText().toString().equals("-") || datos.get(i).getText().toString().equals(".") || datos.get(i).getText().toString().equals("-.")){
                 aux = false;
             }
         }
         return !aux;
     }
-    private void datosToMatrix(){
+    private void datosToMatrixSimplex(){
 
         ArrayList<String> strings = new ArrayList<>();
         int vars = numVar;
@@ -159,18 +173,11 @@ public class CapturarDatosActivity extends AppCompatActivity {
         index = 0;
 
     }
-
-
-
-
-    private void capturaDatos() {
-        datos = new ArrayList<>();
-        LinearLayout layout = findViewById(R.id.captura_datos);
+    private void capturaDatosGrafico() {
+        layout = (LinearLayout) findViewById(R.id.captura_datos);
         int numVar = 2;
         CapturaDatos capturaDatos = new CapturaDatos(this, numVar, numRes, datos, layout, obtenerResul);
-        capturaDatos.capturar();
     }
-
     private void capturarNumRes() {
         Button siguienteButton = findViewById(R.id.siguiente2);
         EditText rest = findViewById(R.id.rest);
@@ -179,22 +186,65 @@ public class CapturarDatosActivity extends AppCompatActivity {
                 Snackbar.make(findViewById(R.id.siguiente2), R.string.rellene_campo, Snackbar.LENGTH_LONG).show();
             } else if (Integer.parseInt(rest.getText().toString()) < 2) {
                 Snackbar.make(findViewById(R.id.siguiente2), R.string.min_res, Snackbar.LENGTH_LONG).show();
-            } else if (Integer.parseInt(rest.getText().toString()) > 50){
+            } else if (Integer.parseInt(rest.getText().toString()) > 10){
                 Snackbar.make(findViewById(R.id.siguiente2), R.string.num_max, Snackbar.LENGTH_LONG).show();
             }else {
                 numRes = Integer.parseInt(rest.getText().toString());
                 setContentView(R.layout.capturar_datos);
-                capturaDatos();
+                capturaDatosGrafico();
             }
         });
     }
-
     private double[] datosToArray(){
         double[]aux = new double[datos.size()];
         for (int i = 0; i < datos.size() ; i++) {
             aux[i] = Double.parseDouble(datos.get(i).getText().toString());
         }
         return aux;
+    }
+    private void capturaDesOr(){
+        EditText nOr = findViewById(R.id.numOrigen);
+        EditText nDes = findViewById(R.id.numDestino);
+        Button siguiente = findViewById(R.id.siguiente3);
+
+        siguiente.setOnClickListener(v -> {
+            if (nOr.getText().toString().equals("") || nDes.getText().toString().equals("")) {
+                Snackbar.make(findViewById(R.id.siguiente3), R.string.rellene_campos, Snackbar.LENGTH_LONG).show();
+            } else if (Integer.parseInt(nOr.getText().toString()) == 0 || Integer.parseInt(nDes.getText().toString()) == 0) {
+                Snackbar.make(findViewById(R.id.siguiente3), R.string.Campos_dif_0, Snackbar.LENGTH_LONG).show();
+            } else if (Integer.parseInt(nDes.getText().toString()) > 10 || Integer.parseInt(nOr.getText().toString()) > 10){
+                Snackbar.make(findViewById(siguiente.getId()), R.string.num_max_or_des, Snackbar.LENGTH_LONG).show();
+            }else {
+                setContentView(R.layout.capturar_datos);
+                numDestino = Integer.parseInt(nDes.getText().toString());
+                numOrigen = Integer.parseInt(nOr.getText().toString());
+                capturaDatosTransporte();
+            }
+        });
+
+
+    }
+    private void capturaDatosTransporte(){
+        layout = (LinearLayout) findViewById(R.id.captura_datos);
+        datos = new ArrayList<>();
+        CapturaDatos capturaDatos = new CapturaDatos(this,datos,layout,obtenerResul,numOrigen,numDestino);
+
+    }
+    private void datosToMatrixTransporte(){
+
+        matrix = new double[numOrigen+1][numDestino+1];
+        for (int i = 0; i <matrix[0].length -1; i++) {
+            for (int j = 0; j < matrix.length; j++) {
+                matrix[j][i] = Double.parseDouble(datos.get(index).getText().toString());
+                index++;
+            }
+        }
+
+        for (int i = 0; i < matrix.length-1 ; i++) {
+            matrix[i][numDestino] = Double.parseDouble(datos.get(index).getText().toString());
+            index++;
+        }
+        index = 0;
     }
 
 }

@@ -58,7 +58,14 @@ public class GraficoActivity extends AppCompatActivity {
         int indice = 0;
         double z;
         for (int i = 0; i < intersecciones.size(); i++) {
-            z = x1 * intersecciones.get(i).getX() + x2 * intersecciones.get(i).getY();
+            double interX = intersecciones.get(i).getX();
+            double interY = intersecciones.get(i).getY();
+            if (Double.isInfinite(interX)) {
+                interX = 0;
+            } else if (Double.isInfinite(interY)) {
+                interY = 0;
+            }
+            z = x1 * interX + x2 * interY;
             if (z > mayor) {
                 mayor = z;
                 indice = i;
@@ -125,8 +132,8 @@ public class GraficoActivity extends AppCompatActivity {
 
         for (int i = 0; i < restricciones.size(); i++) {
             DataPoint[] point = new DataPoint[2];
-            double x = maxX();
-            double y = maxY();
+            double x = Integer.MAX_VALUE;
+            double y = Integer.MAX_VALUE;
             if (Double.isInfinite(restricciones.get(i)[0].getX())) {
                 point[0] = new DataPoint(restricciones.get(i)[0].getX(), restricciones.get(i)[0].getY());
                 point[1] = new DataPoint((resReul[i] - (resX2[i] * y)) / resX1[i], y);
@@ -151,131 +158,122 @@ public class GraficoActivity extends AppCompatActivity {
         LinearLayout principal = findViewById(R.id.principal);
         getIntersecciones();
         DataPoint[] points = interDataPoints();
-        //ordenarY(points);
-        if (points.length == 0) {
-            principal.setGravity(Gravity.CENTER_VERTICAL);
-            TextView textView = new TextView(this);
-            textView.setTextColor(Color.RED);
-            textView.setText(R.string.imposible_solucion);
-            textView.setTextSize(50);
-            principal.addView(textView);
-        } else {
-            getRandomColors();
-            TypedValue outValue = new TypedValue();
-            getTheme().resolveAttribute(R.attr.colorOnPrimary, outValue, true);
-            final int color = outValue.data;
-            double[] xyz = getX1X2Z();
-            double maxX = maxX();
-            double maxY = maxY();
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 40);
-            for (int i = 0; i < 4; i++) {
-                for (int j = 0; j < 2; j++) {
-                    if (j == 0) {
-                        TextView textView = new TextView(this);
-                        textView.setLayoutParams(params);
-                        textView.setBackgroundColor(Color.GREEN);
-                        textView.setTextSize(50);
-                        if (i == 1) {
-                            textView.setText(R.string.puntos_posibles);
-                        } else if (i == 2) {
-                            textView.setText(R.string.punto_optimo);
-                        } else if (i == 3) {
-                            textView.setText(R.string.resultado);
-                        } else {
-                            textView.setText(R.string.area_solucion);
-                        }
-
-                        principal.addView(textView);
+        getRandomColors();
+        TypedValue outValue = new TypedValue();
+        getTheme().resolveAttribute(R.attr.colorOnPrimary, outValue, true);
+        final int color = outValue.data;
+        double maxX = maxX();
+        double maxY = maxY();
+        double[] xyz = getX1X2Z();
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 40);
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 2; j++) {
+                if (j == 0) {
+                    TextView textView = new TextView(this);
+                    textView.setLayoutParams(params);
+                    textView.setBackgroundColor(Color.GREEN);
+                    textView.setTextSize(50);
+                    if (i == 1) {
+                        textView.setText(R.string.puntos_posibles);
+                    } else if (i == 2) {
+                        textView.setText(R.string.punto_optimo);
+                    } else if (i == 3) {
+                        textView.setText(R.string.resultado);
                     } else {
-                        if (i == 3) {
-                            for (int l = 0; l < 3; l++) {
-                                LinearLayout layout = new LinearLayout(this);
-                                TextView textView = new TextView(this);
-                                textView.setTextSize(50);
-                                textView.setLayoutParams(params);
-                                textView.setGravity(Gravity.END);
-                                TextView textView2 = new TextView(this);
-                                textView2.setTextSize(50);
-                                textView2.setLayoutParams(params);
-                                textView2.setTextColor(Color.BLUE);
-                                textView.setTextColor(Color.RED);
-                                double aux;
-                                if (Double.isFinite(xyz[l])) {
-                                    aux = Math.round(xyz[l] * 1000);
-                                    aux /= 1000;
-                                } else {
-                                    aux = xyz[l];
-                                }
-                                textView2.setText(Double.toString(aux));
-                                if (l == 0) {
-                                    textView.setText(" X1: ");
-                                } else if (l == 1) {
-                                    textView.setText(" X2: ");
-                                } else {
-                                    textView.setText(" Z: ");
-                                }
-                                layout.addView(textView);
-                                layout.addView(textView2);
-                                principal.addView(layout);
+                        textView.setText(R.string.area_solucion);
+                    }
+
+                    principal.addView(textView);
+                } else {
+                    if (i == 3) {
+                        for (int l = 0; l < 3; l++) {
+                            LinearLayout layout = new LinearLayout(this);
+                            TextView textView = new TextView(this);
+                            textView.setTextSize(50);
+                            //textView.setLayoutParams(params);
+                            textView.setGravity(Gravity.END);
+                            TextView textView2 = new TextView(this);
+                            textView2.setTextSize(50);
+                            textView2.setLayoutParams(params);
+                            textView2.setTextColor(Color.BLUE);
+                            textView.setTextColor(Color.RED);
+                            double aux;
+                            if (Double.isFinite(xyz[l])) {
+                                aux = Math.round(xyz[l] * 1000);
+                                aux /= 1000;
+                            } else {
+                                aux = xyz[l];
                             }
-                        } else {
-                            GraphView graphView = new GraphView(this);
-                            graphView.getViewport().setYAxisBoundsManual(true);
-                            graphView.getViewport().setXAxisBoundsManual(true);
-                            graphView.getViewport().setMaxX(maxX);
-                            graphView.getViewport().setMaxY(maxY);
-                            if (intersecciones.size() >= 2) {
-                                LineGraphSeries<DataPoint> areaSolucion = new LineGraphSeries<>(points);
-                                areaSolucion.setBackgroundColor(Color.argb(125, 63, 190, 63));
-                                areaSolucion.setDrawBackground(true);
-                                areaSolucion.setColor(Color.TRANSPARENT);
-                                graphView.addSeries(areaSolucion);
-                                if (corregir) {
-
-                                    LineGraphSeries<DataPoint> areaSolucion1 = new LineGraphSeries<>(corregirGrafica);
-                                    areaSolucion1.setBackgroundColor(color);
-                                    areaSolucion1.setDrawBackground(true);
-                                    areaSolucion1.setColor(Color.TRANSPARENT);
-                                    graphView.addSeries(areaSolucion1);
-
-                                }
-
+                            textView2.setText(Double.toString(aux));
+                            if (l == 0) {
+                                textView.setText(" X1: ");
+                            } else if (l == 1) {
+                                textView.setText(" X2: ");
+                            } else {
+                                textView.setText("  Z:   ");
                             }
+                            layout.addView(textView);
+                            layout.addView(textView2);
+                            principal.addView(layout);
+                        }
+                    } else {
+                        GraphView graphView = new GraphView(this);
+                        graphView.getViewport().setYAxisBoundsManual(true);
+                        graphView.getViewport().setXAxisBoundsManual(true);
+                        graphView.getViewport().setMaxX(maxX);
+                        graphView.getViewport().setMaxY(maxY);
+                        if (intersecciones.size() >= 2) {
+                            LineGraphSeries<DataPoint> areaSolucion = new LineGraphSeries<>(points);
+                            areaSolucion.setBackgroundColor(Color.argb(125, 63, 190, 63));
+                            areaSolucion.setDrawBackground(true);
+                            areaSolucion.setColor(Color.TRANSPARENT);
+                            graphView.addSeries(areaSolucion);
+                            if (corregir) {
 
-                            graphView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 800));
-                            for (int k = 0; k < funciones.size(); k++) {
-                                LineGraphSeries<DataPoint> series = new LineGraphSeries<>(funciones.get(k));
-                                series.setColor(colors[k]);
-                                series.setThickness(10);
-                                graphView.addSeries(series);
+                                LineGraphSeries<DataPoint> areaSolucion1 = new LineGraphSeries<>(corregirGrafica);
+                                areaSolucion1.setBackgroundColor(color);
+                                areaSolucion1.setDrawBackground(true);
+                                areaSolucion1.setColor(Color.TRANSPARENT);
+                                graphView.addSeries(areaSolucion1);
+
                             }
 
-
-                            if (i == 1) {
-                                PointsGraphSeries<DataPoint> series = new PointsGraphSeries<>(points);
-                                graphView.addSeries(series);
-                                if (corregir) {
-                                    PointsGraphSeries<DataPoint> series1 = new PointsGraphSeries<>(corregirGrafica);
-                                    graphView.addSeries(series1);
-                                }
-                            } else if (i == 2) {
-                                DataPoint[] point = new DataPoint[1];
-                                point[0] = new DataPoint(xyz[0], xyz[1]);
-                                PointsGraphSeries<DataPoint> series = new PointsGraphSeries<>(point);
-                                series.setColor(Color.RED);
-                                graphView.addSeries(series);
-
-                            }
-                            principal.addView(graphView);
                         }
 
-                    }
-                }
+                        graphView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 800));
+                        for (int k = 0; k < funciones.size(); k++) {
+                            LineGraphSeries<DataPoint> series = new LineGraphSeries<>(funciones.get(k));
+                            series.setColor(colors[k]);
+                            series.setThickness(10);
+                            graphView.addSeries(series);
+                        }
 
+
+                        if (i == 1) {
+                            PointsGraphSeries<DataPoint> series = new PointsGraphSeries<>(points);
+                            graphView.addSeries(series);
+                            if (corregir) {
+                                PointsGraphSeries<DataPoint> series1 = new PointsGraphSeries<>(corregirGrafica);
+                                graphView.addSeries(series1);
+                            }
+                        } else if (i == 2) {
+                            DataPoint[] point = new DataPoint[1];
+                            point[0] = new DataPoint(xyz[0], xyz[1]);
+                            PointsGraphSeries<DataPoint> series = new PointsGraphSeries<>(point);
+                            series.setColor(Color.RED);
+                            graphView.addSeries(series);
+
+                        }
+                        principal.addView(graphView);
+                    }
+
+                }
             }
 
         }
+
     }
+
 
     private void getIntersecciones() {
         for (int i = 0; i < resX1.length; i++) {
@@ -353,9 +351,17 @@ public class GraficoActivity extends AppCompatActivity {
         for (int i = 0; i < restricciones.size(); i++) {
             for (int j = 0; j < restricciones.get(i).length; j++) {
                 if (restricciones.get(i)[j].getY() > max && Double.isFinite(restricciones.get(i)[j].getY())) {
-                    max = (int) restricciones.get(i)[j].getY();
+                    max = restricciones.get(i)[j].getY();
                 }
             }
+        }
+        for (int i = 0; i < intersecciones.size(); i++) {
+            if (intersecciones.get(i).getY() > max && Double.isFinite(intersecciones.get(i).getY())) {
+                max = intersecciones.get(i).getY();
+            }
+        }
+        if (max < 1){
+            max = 1;
         }
 
         return max + 1;
@@ -366,28 +372,37 @@ public class GraficoActivity extends AppCompatActivity {
         for (int i = 0; i < restricciones.size(); i++) {
             for (int j = 0; j < restricciones.get(i).length; j++) {
                 if (restricciones.get(i)[j].getX() > max && Double.isFinite(restricciones.get(i)[j].getX())) {
-                    max = (int) restricciones.get(i)[j].getX();
+                    max = restricciones.get(i)[j].getX();
                 }
             }
         }
 
-        return max + 1;
+        for (int i = 0; i < intersecciones.size(); i++) {
+            if (intersecciones.get(i).getX() > max && Double.isFinite(intersecciones.get(i).getX())) {
+                max = intersecciones.get(i).getX();
+            }
+        }
+        if (max < 1){
+            max = 1;
+        }
+
+        return max * 1.2;
     }
 
     private void comprobarIntersecciones() {
         ArrayList<DataPoint> tmp = new ArrayList<>();
         boolean flag;
-        tmp.add(new DataPoint(0,0));
+        tmp.add(new DataPoint(0, 0));
         for (int i = 0; i < intersecciones.size(); i++) {
             flag = true;
             for (int j = 0; j < resX1.length && flag; j++) {
                 double num = 100000000;
-                double x1 = Math.round(resX1[j] * intersecciones.get(i).getX()*num);
+                double x1 = Math.round(resX1[j] * intersecciones.get(i).getX() * num);
                 x1 /= num;
-                double x2 = Math.round(resX2[j] * intersecciones.get(i).getY()*num);
+                double x2 = Math.round(resX2[j] * intersecciones.get(i).getY() * num);
                 x2 /= num;
-                if (x1 + x2 > resReul[j]){
-                    flag =false;
+                if (x1 + x2 > resReul[j] || intersecciones.get(i).getX() < 0 || intersecciones.get(i).getY() < 0) {
+                    flag = false;
                 }
             }
             if (flag) {

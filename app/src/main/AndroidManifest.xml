@@ -4,20 +4,23 @@
 
     <application
         android:allowBackup="true"
+        android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.LinearProgramming.NoActionBar"
-        android:fullBackupContent="true">
+        android:theme="@style/Theme.LinearProgramming.NoActionBar">
+        <activity android:name=".EsqSupNoroesteActivity"
+            android:label="@string/title_activity_esq_sup_noroeste"
+            android:theme="@style/Theme.LinearProgramming"/>
         <activity
             android:name=".CapturarDatosActivity"
             android:label="@string/title_activity_capurar_datos"
-            android:theme="@style/Theme.LinearProgramming"/>
+            android:theme="@style/Theme.LinearProgramming" />
         <activity
             android:name=".GraficoActivity"
             android:label="@string/title_activity_grafico"
-            android:theme="@style/Theme.LinearProgramming"/>
+            android:theme="@style/Theme.LinearProgramming" />
         <activity
             android:name=".SimplexTableActivity"
             android:label="@string/title_activity_simplex"

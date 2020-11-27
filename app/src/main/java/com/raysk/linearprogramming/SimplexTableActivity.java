@@ -1,7 +1,6 @@
 package com.raysk.linearprogramming;
 
 import android.annotation.SuppressLint;
-import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -32,7 +31,7 @@ public class SimplexTableActivity extends AppCompatActivity {
         vars = matrix[0].length - rests - 1;
 
 
-        setContentView(R.layout.simplex_table);
+        setContentView(R.layout.table);
         Simplex simplex = new Simplex(matrix);
         tablas = simplex.processing();
         presentarTabla();
@@ -67,7 +66,6 @@ public class SimplexTableActivity extends AppCompatActivity {
             tableLayout.addView(linearLayout);
             if (i < tablas.size()) {
                 DinamicTable dinamicTable = new DinamicTable(tableLayout, this, tablas.get(i));
-                dinamicTable.get();
             } else {
                 encotrarResultado();
                 for (int j = 0; j < resultado.size(); j++) {
