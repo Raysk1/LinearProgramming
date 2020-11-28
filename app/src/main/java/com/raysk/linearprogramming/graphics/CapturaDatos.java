@@ -23,8 +23,8 @@ public class CapturaDatos {
     private final ArrayList<EditText> datos;
     private final LinearLayout layout;
     private final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
-    InputFilter[] filterArray = new InputFilter[1];
-
+    private InputFilter[] filterArray = new InputFilter[1];
+    private boolean transporte;
 
     public CapturaDatos(Context context, int numVar, int numRes, ArrayList<EditText> datos, LinearLayout layout, Button obtenerResul) {
         this.context = context;

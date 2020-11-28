@@ -18,6 +18,7 @@ public class EsqSupNoroesteActivity extends AppCompatActivity {
     private String[][] stringMatrix;
     private String[][] asignacion;
     private String total;
+    private boolean ofertaF, demandaF;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +30,8 @@ public class EsqSupNoroesteActivity extends AppCompatActivity {
         asignacion = supNoroeste.getAsignacion();
         stringMatrix = supNoroeste.getStringMatrix();
         total = supNoroeste.getTotal();
+        ofertaF = supNoroeste.getOfertaF();
+        demandaF = supNoroeste.getDemandaF();
         presentarTabla();
         
     }
@@ -49,7 +52,7 @@ public class EsqSupNoroesteActivity extends AppCompatActivity {
             tableLayout.addView(linearLayout);
             if (i == 0){
                 textView.setText(R.string.tabla);
-                DinamicTable dinamicTable = new DinamicTable(tableLayout,this, stringMatrix,asignacion,total);
+                DinamicTable dinamicTable = new DinamicTable(tableLayout,this, stringMatrix,asignacion,total,ofertaF,demandaF);
             }else if (i ==1 ){
                 textView.setText(R.string.resultado);
             }else {

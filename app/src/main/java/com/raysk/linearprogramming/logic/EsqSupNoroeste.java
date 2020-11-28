@@ -6,8 +6,8 @@ public class EsqSupNoroeste {
     private final double[][] asignacion;
     private final int iDemanda;
     private final int iOferta;
-    public boolean ofertaFic = false;
-    public boolean demandaF = false;
+    private boolean ofertaF = false;
+    private boolean demandaF = false;
     private double oferta = 0;
     private double demanda = 0;
     private String[][] stringMatrix;
@@ -65,7 +65,7 @@ public class EsqSupNoroeste {
                 }
             }
             aux[aux.length - 2][aux[0].length - 1] = diferencia;
-            ofertaFic = true;
+            ofertaF = true;
             matrix = aux;
         }
     }
@@ -136,6 +136,14 @@ public class EsqSupNoroeste {
             return demanda + "/" + demanda;
         }
 
+    }
+
+    public boolean getOfertaF(){
+        return ofertaF;
+    }
+
+    public  boolean getDemandaF(){
+        return demandaF;
     }
 
 }

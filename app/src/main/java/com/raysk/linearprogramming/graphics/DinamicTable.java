@@ -24,6 +24,7 @@ public class DinamicTable {
     private String[][] asignacion;
     private int textSize;
     private ArrayList<TextView> datos;
+    private boolean ofertaF, demandaF;
 
     public DinamicTable(TableLayout tableLayout, Context context, String[][] matrix) {
         this.tableLayout = tableLayout;
@@ -44,11 +45,13 @@ public class DinamicTable {
         createDataTable();
     }
 
-    public DinamicTable(TableLayout tableLayout, Context context, String[][] matrix, String[][] asignacion, String total){
+    public DinamicTable(TableLayout tableLayout, Context context, String[][] matrix, String[][] asignacion, String total,boolean ofertaF, boolean demandaF){
         height = 180;
         datos = new ArrayList<>();
         textSize = 20;
         widht = 300;
+        this.demandaF = demandaF;
+        this.ofertaF = ofertaF;
         this.tableLayout = tableLayout;
         this.context = context;
         this.matrix = matrix;
@@ -67,7 +70,7 @@ public class DinamicTable {
     private void setColor() {
         for (int i = 0; i < datos.size() ; i++) {
             if (datos.get(i).getText().toString().contains("(")){
-                datos.get(i).setBackgroundColor(Color.BLUE);
+                datos.get(i).setBackgroundColor(Color.argb(74,70,230,230));
             }
         }
     }
@@ -96,6 +99,9 @@ public class DinamicTable {
         header[header.length - 1] = "Oferta";
         for (int i = 1; i < header.length - 1 ; i++) {
             header[i] = "Destino " + i;
+        }
+        if (demandaF){
+            header[header.length - 2] += "(F)";
         }
 
     }
@@ -135,6 +141,7 @@ public class DinamicTable {
                 newCell();
                 //textCell.setWidth(widht);
                 textCell.setHeight(height);
+                textCell.setBackgroundColor(Color.argb(70,230,70,210));
                 textCell.setText(datum[j]);
 
                 if (j == 0) {
@@ -172,6 +179,10 @@ public class DinamicTable {
             }
 
         }
+        if (ofertaF){
+            data[data.length-2][0] += "(F)";
+        }
+
         int cont = 0;
         for (int i = 0; i < data.length; i++) {
             for (int j = 0; j < data[0].length-1; j++) {
@@ -191,8 +202,8 @@ public class DinamicTable {
 
     private TableRow.LayoutParams newTableRomParams() {
         TableRow.LayoutParams params = new TableRow.LayoutParams();
-        params.setMargins(10, 10, 10, 10);
-        params.weight = 50;
+        params.setMargins(8, 8, 8, 8);
+       // params.weight = 50000;
         return params;
     }
 
